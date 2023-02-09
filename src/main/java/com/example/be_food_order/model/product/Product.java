@@ -19,5 +19,7 @@ public class Product {
     @NotNull
     private String name;
     @ManyToOne
+    private ProductMethod productMethod;
+    @ManyToOne
     private Store store;
 }

@@ -23,7 +23,4 @@ public class ProductMethod {
     private String description;
     @ManyToOne
     private Category category;
-    @ManyToOne
-    private Product product;
-
 }
