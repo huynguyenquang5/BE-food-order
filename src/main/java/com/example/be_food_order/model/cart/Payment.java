@@ -1,5 +1,5 @@
 package com.example.be_food_order.model.cart;
-import com.example.be_food_order.model.store.Ship;
+import com.example.be_food_order.model.store.Delivery;
 import com.example.be_food_order.model.store.Store;
 import com.example.be_food_order.model.user.User;
 import com.sun.istack.NotNull;
@@ -27,7 +27,7 @@ public class Payment {
     @NotNull
     private double price;
     @ManyToOne
-    private Ship ship;
+    private Delivery delivery;
     @NotNull
     private int status;
 }
