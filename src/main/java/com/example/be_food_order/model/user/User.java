@@ -28,6 +28,9 @@ public class User {
     @Column(unique = true)
     @NotNull
     private String phone;
+    @Column(unique = true)
+    @NotNull
+    private String email;
     @NotNull
     private Double wallet = 0.0;
     @NotNull
