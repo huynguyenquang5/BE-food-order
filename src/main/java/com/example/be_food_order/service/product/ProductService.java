@@ -30,4 +30,7 @@ public class ProductService implements ICRUDService<Product, Long> {
     public void deleteById(Long aLong) {
         productRepository.deleteById(aLong);
     }
+    public Product findLast(){
+       return productRepository.findLast();
+    }
 }

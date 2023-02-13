@@ -22,4 +22,8 @@ public class CategoryController {
     public ResponseEntity<Category> createProduct(@RequestBody Category category){
         return new ResponseEntity<>(categoryService.save(category), HttpStatus.CREATED);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> findById(@PathVariable Long id){
+        return new ResponseEntity<>(categoryService.findOneById(id).get(), HttpStatus.OK);
+    }
 }
