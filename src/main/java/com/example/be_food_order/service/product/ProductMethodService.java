@@ -29,6 +29,5 @@ public class ProductMethodService implements ICRUDService<ProductMethod, Long> {
     @Override
     public void deleteById(Long aLong) {
         productMethodRepository.deleteById(aLong);
-
     }
 }
