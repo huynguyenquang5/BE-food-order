@@ -45,4 +45,7 @@ public class ImageService implements ICRUDService<Image, Long> {
     public Iterable<Image> findAllFilterStore(Long id) {
         return imageRepository.findAllFilterStore(id);
     }
+    public Iterable<Image> findAllFilter() {
+        return imageRepository.findAllFilter();
+    }
 }

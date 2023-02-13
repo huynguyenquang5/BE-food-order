@@ -38,4 +38,8 @@ public class ImageController {
     public ResponseEntity<Iterable<Image>> findAllFilterStore(@PathVariable Long id){
         return new ResponseEntity<>(imageService.findAllFilterStore(id), HttpStatus.OK);
     }
+    @GetMapping("/filters")
+    public ResponseEntity<Iterable<Image>> findAllFilter(){
+        return new ResponseEntity<>(imageService.findAllFilter(), HttpStatus.OK);
+    }
 }
