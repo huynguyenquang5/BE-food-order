@@ -34,4 +34,8 @@ public class ImageController {
             return new ResponseEntity<>(images,HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/filters")
+    public ResponseEntity<Iterable<Image>> findAllFilter(){
+        return new ResponseEntity<>(imageService.findAllFilter(), HttpStatus.OK);
+    }
 }

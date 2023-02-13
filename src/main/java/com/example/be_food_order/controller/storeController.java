@@ -24,4 +24,8 @@ public class storeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping()
+    public ResponseEntity<Iterable<Store>> findAll(){
+        return new ResponseEntity<>(storeService.findAll(),HttpStatus.OK);
+    }
 }

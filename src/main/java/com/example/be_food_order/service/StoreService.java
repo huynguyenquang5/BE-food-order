@@ -13,7 +13,7 @@ public class StoreService implements ICRUDService<Store, Long>{
     private IStoreRepository storeRepository;
     @Override
     public Iterable<Store> findAll() {
-        return null;
+        return storeRepository.findAll();
     }
 
     @Override

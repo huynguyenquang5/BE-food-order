@@ -42,4 +42,7 @@ public class ImageService implements ICRUDService<Image, Long> {
             return null;
         }
     }
+    public Iterable<Image> findAllFilter() {
+        return imageRepository.findAllFilter();
+    }
 }

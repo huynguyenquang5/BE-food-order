@@ -58,10 +58,10 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id){
-        return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Product> findById(@PathVariable Long id){
+//        return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
+//    }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         productService.deleteById(id);
