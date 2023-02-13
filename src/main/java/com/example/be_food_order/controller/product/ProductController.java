@@ -32,23 +32,26 @@ public class ProductController {
         image.setProduct(product);
         return new ResponseEntity<>(imageService.save(image), HttpStatus.CREATED);
     }
+
     @GetMapping()
     public ResponseEntity<Iterable<Product>> findAllProduct(){
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findOne(@PathVariable Long id){
-        if(productService.findOneById(id).isPresent()){
+    public ResponseEntity<Product> findOne(@PathVariable Long id) {
+        if (productService.findOneById(id).isPresent()) {
             return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
-        }else {
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping("/store/{id}")
-    public ResponseEntity<Iterable<Product>> findAllByStore(@PathVariable Long id){
-        if(productService.findAllByStore(id) != null){
+    public ResponseEntity<Iterable<Product>> findAllByStore(@PathVariable Long id) {
+        if (productService.findAllByStore(id) != null) {
             return new ResponseEntity<>(productService.findAllByStore(id), HttpStatus.OK);
-        }else {
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
