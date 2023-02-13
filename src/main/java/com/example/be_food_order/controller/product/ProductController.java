@@ -1,5 +1,4 @@
 package com.example.be_food_order.controller.product;
-
 import com.example.be_food_order.model.product.Image;
 import com.example.be_food_order.model.product.Product;
 import com.example.be_food_order.model.product.ProductMethod;
@@ -11,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/products")
@@ -35,7 +34,6 @@ public class ProductController {
     }
     @GetMapping()
     public ResponseEntity<Iterable<Product>> findAllProduct(){
-
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
     }
     @GetMapping("/{id}")
@@ -55,10 +53,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id){
-        return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
-    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         productService.deleteById(id);
