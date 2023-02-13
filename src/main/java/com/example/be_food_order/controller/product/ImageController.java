@@ -28,7 +28,7 @@ public class ImageController {
     @GetMapping("/product/{id}")
     public ResponseEntity<Iterable<Image>> findAllByProduct(@PathVariable Long id){
         if (imageService.findAllByProduct(id) != null){
-            return new ResponseEntity<>(imageService.findAll(), HttpStatus.OK);
+            return new ResponseEntity<>(imageService.findAllByProduct(id), HttpStatus.OK);
         }else {
             List<Image> images = new ArrayList<>();
             return new ResponseEntity<>(images,HttpStatus.NOT_FOUND);
