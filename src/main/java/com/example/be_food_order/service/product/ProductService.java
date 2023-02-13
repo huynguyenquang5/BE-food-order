@@ -38,6 +38,9 @@ public class ProductService implements ICRUDService<Product, Long> {
     public void deleteById(Long aLong) {
         productRepository.deleteById(aLong);
     }
+    public Product findLast(){
+       return productRepository.findLast();
+    }
     public Iterable<Product> findAllByStore(Long id){
         if(storeRepository.findById(id).isPresent()){
             return productRepository.findAllByStoreId(id);
