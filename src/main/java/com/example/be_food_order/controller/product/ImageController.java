@@ -49,6 +49,20 @@ public class ImageController {
     public ResponseEntity<Iterable<Image>> findAllFilter(){
         return new ResponseEntity<>(imageService.findAllFilter(), HttpStatus.OK);
     }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Image> updateImage(@PathVariable Long id, @RequestBody Image image){
+       Optional<Image> image1 = imageService.findOneById(id);
+        if(image1.isPresent()){
+            return new ResponseEntity<>(imageService.save(image), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id){
+        imageService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @DeleteMapping("/delete/product/{id}")
     public ResponseEntity<String> deleteAllByProduct(@PathVariable Long id){
         Optional<Product> product = productService.findOneById(id);
