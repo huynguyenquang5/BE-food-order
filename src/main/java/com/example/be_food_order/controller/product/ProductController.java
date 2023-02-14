@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-
 @RestController
 @RequestMapping("/products")
 @CrossOrigin("*")
@@ -22,7 +20,7 @@ public class ProductController {
     private ProductMethodService productMethodService;
     @Autowired
     private ImageService imageService;
-    @PostMapping("create")
+    @PostMapping("/create")
     public ResponseEntity<Image> createImage(@RequestBody Image image){
         productMethodService.save(image.getProduct().getProductMethod());
         ProductMethod productMethod = productMethodService.findLast();
@@ -54,11 +52,6 @@ public class ProductController {
         }else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id){
-        return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
