@@ -25,14 +25,22 @@ public class StoreService implements ICRUDService<Store, Long>{
             return null;
         }
     }
-
     @Override
     public Store save(Store store) {
-        return null;
+        return storeRepository.save(store);
     }
 
     @Override
     public void deleteById(Long aLong) {
 
+    }
+
+    public Optional<Store> findStoreByUserId(Long userId) {
+        Optional<Store> store = storeRepository.findStoreByUserId(userId);
+        if (store.isPresent()) {
+            return store;
+        } else {
+            return null;
+        }
     }
 }
