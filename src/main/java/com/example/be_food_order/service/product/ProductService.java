@@ -48,4 +48,12 @@ public class ProductService implements ICRUDService<Product, Long> {
             return null;
         }
     }
+    public boolean deleteProduct(Long id){
+        try{
+            deleteById(id);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
 }

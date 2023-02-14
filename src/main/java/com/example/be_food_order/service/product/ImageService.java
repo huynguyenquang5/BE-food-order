@@ -6,6 +6,7 @@ import com.example.be_food_order.repository.product.IProductRepository;
 import com.example.be_food_order.service.ICRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,5 +48,14 @@ public class ImageService implements ICRUDService<Image, Long> {
     }
     public Iterable<Image> findAllFilter() {
         return imageRepository.findAllFilter();
+    }
+    @Transactional
+    public boolean deleteAllByProduct(Long productId) {
+        try {
+            imageRepository.deleteListImageByProduct(productId);
+            return true;
+        }catch (Exception e) {
+            return false;
+        }
     }
 }
