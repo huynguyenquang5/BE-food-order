@@ -1,7 +1,7 @@
 package com.example.be_food_order.controller.product;
 
 import com.example.be_food_order.model.product.Image;
-import com.example.be_food_order.model.product.Product;
+
 import com.example.be_food_order.service.product.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
