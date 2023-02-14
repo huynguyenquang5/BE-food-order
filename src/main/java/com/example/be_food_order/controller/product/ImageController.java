@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/images")
@@ -41,5 +42,19 @@ public class ImageController {
     @GetMapping("/filters")
     public ResponseEntity<Iterable<Image>> findAllFilter(){
         return new ResponseEntity<>(imageService.findAllFilter(), HttpStatus.OK);
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Image> updateImage(@PathVariable Long id, @RequestBody Image image){
+       Optional<Image> image1 = imageService.findOneById(id);
+        if(image1.isPresent()){
+            return new ResponseEntity<>(imageService.save(image), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id){
+        imageService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

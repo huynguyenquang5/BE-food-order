@@ -1,4 +1,4 @@
-package com.example.be_food_order.controller.user;
+package com.example.be_food_order.model.product.user;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,5 +1,4 @@
 package com.example.be_food_order.controller.product;
-
 import com.example.be_food_order.model.product.Image;
 import com.example.be_food_order.model.product.Product;
 import com.example.be_food_order.model.product.ProductMethod;
@@ -36,7 +35,6 @@ public class ProductController {
 
     @GetMapping()
     public ResponseEntity<Iterable<Product>> findAllProduct(){
-
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
     }
 
@@ -62,6 +60,7 @@ public class ProductController {
     public ResponseEntity<Product> findById(@PathVariable Long id){
         return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         productService.deleteById(id);
