@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.NotFound;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -20,9 +21,10 @@ public class User {
     private Long id;
     @NotNull
     private String name;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @NotNull
     private String username;
+
     @NotNull
     private String password;
     @Column(unique = true)
@@ -35,6 +37,8 @@ public class User {
     private Double wallet = 0.0;
     @NotNull
     private Integer status = 1;
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
+
+
 }
