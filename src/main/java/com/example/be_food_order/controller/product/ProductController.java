@@ -29,6 +29,7 @@ public class ProductController {
         Product product = image.getProduct();
         product.setProductMethod(productMethod);
         productService.save(product);
+        product = productService.findLast();
         image.setProduct(product);
         return new ResponseEntity<>(imageService.save(image), HttpStatus.CREATED);
     }
@@ -56,14 +57,27 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id){
-        return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Product> findById(@PathVariable Long id){
+//        return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
         productService.deleteById(id);
         return new ResponseEntity<>( HttpStatus.OK);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product){
+        ProductMethod productMethod = product.getProductMethod();
+        productMethodService.save(productMethod);
+        ProductMethod productMethod1 = productMethodService.findOneById(productMethod.getId()).get();
+        product.setProductMethod(productMethod1);
+        if (productService.findOneById(id).isPresent()){
+            return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
+
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -10,4 +10,5 @@ public interface IProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "select * from product where id = (select MAX(id) from product)", nativeQuery = true)
     Product findLast();
     Iterable<Product> findAllByStoreId(Long storeId);
+
 }
