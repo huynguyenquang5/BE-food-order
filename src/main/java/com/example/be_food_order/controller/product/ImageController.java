@@ -8,6 +8,7 @@ import com.example.be_food_order.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -67,10 +68,8 @@ public class ImageController {
     public ResponseEntity<String> deleteAllByProduct(@PathVariable Long id){
         Optional<Product> product = productService.findOneById(id);
         if(product.isPresent()) {
-            boolean checkImg = imageService.deleteAllByProduct(product.get().getId());
-            boolean checkProduct = productService.deleteProduct(product.get().getId());
-            boolean checkProductMethod = productMethodService.deleteProductMethod(product.get().getProductMethod().getId());
-            if (checkImg && checkProduct && checkProductMethod){
+            boolean checkImg = imageService.deleteAllByProduct(product.get());
+            if (checkImg){
                 return new ResponseEntity<>("done",HttpStatus.OK);
             }else{
                 return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
