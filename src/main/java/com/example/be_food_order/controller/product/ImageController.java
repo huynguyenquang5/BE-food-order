@@ -1,8 +1,10 @@
 package com.example.be_food_order.controller.product;
 
 import com.example.be_food_order.model.product.Image;
-
+import com.example.be_food_order.model.product.Product;
 import com.example.be_food_order.service.product.ImageService;
+import com.example.be_food_order.service.product.ProductMethodService;
+import com.example.be_food_order.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,10 @@ import java.util.Optional;
 public class ImageController {
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ProductMethodService productMethodService;
     @PostMapping("create")
     public ResponseEntity<Image> createProduct(@RequestBody Image image){
         return new ResponseEntity<>(imageService.save(image), HttpStatus.CREATED);
@@ -56,5 +62,21 @@ public class ImageController {
     public ResponseEntity<?> deleteById(@PathVariable Long id){
         imageService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @DeleteMapping("/delete/product/{id}")
+    public ResponseEntity<String> deleteAllByProduct(@PathVariable Long id){
+        Optional<Product> product = productService.findOneById(id);
+        if(product.isPresent()) {
+            boolean checkImg = imageService.deleteAllByProduct(product.get().getId());
+            boolean checkProduct = productService.deleteProduct(product.get().getId());
+            boolean checkProductMethod = productMethodService.deleteProductMethod(product.get().getProductMethod().getId());
+            if (checkImg && checkProduct && checkProductMethod){
+                return new ResponseEntity<>("done",HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
+            }
+        }else{
+            return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -33,4 +33,12 @@ public class ProductMethodService implements ICRUDService<ProductMethod, Long> {
     public ProductMethod findLast(){
         return productMethodRepository.findLast();
     }
+    public boolean deleteProductMethod(Long id){
+        try {
+            deleteById(id);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
 }
