@@ -1,15 +1,19 @@
 package com.example.be_food_order.service.user;
 
 import com.example.be_food_order.model.user.User;
+import com.example.be_food_order.model.user.UserPrinciple;
 import com.example.be_food_order.repository.user.IUserRepository;
 import com.example.be_food_order.service.ICRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService implements ICRUDService<User, Long> {
+public class UserService implements ICRUDService<User, Long>, UserDetailsService {
     @Autowired
     private IUserRepository userRepository;
     @Override
@@ -30,5 +34,16 @@ public class UserService implements ICRUDService<User, Long> {
     @Override
     public void deleteById(Long aLong) {
         userRepository.deleteById(aLong);
+    }
+    public Optional<User> findByUsername(String name){
+        return userRepository.findByUsername(name);
+    }
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            throw new UsernameNotFoundException(username);
+        }
+        return UserPrinciple.build(userOptional.get());
     }
 }
