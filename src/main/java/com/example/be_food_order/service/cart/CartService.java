@@ -112,6 +112,7 @@ public class CartService {
                     Delivery delivery = deliveryRepository.findAll().get(0);
                     payment.get().setDelivery(delivery);
                     payment.get().setStatus(2);
+                    deleteAllCart(payment.get().getUser().getId(),payment.get().getStore().getId());
                     break;
                 case "success":
                     payment.get().setStatus(3);

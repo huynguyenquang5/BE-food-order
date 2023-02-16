@@ -61,12 +61,13 @@ public class CartController {
             return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
         }
     }
-//    @GetMapping("/payment/2/{id}")
-//    public ResponseEntity<String> total2(@PathVariable("id") Long id){
-//        if (cartService.userCancelsPayment(id)){
-//            return new ResponseEntity<>("success",HttpStatus.OK);
-//        }else {
-//            return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @GetMapping("/payment-cart/store/{storeId}/user/{userId}")
+    public ResponseEntity<Message> paymentCart(@PathVariable("storeId") Long storeId,
+                                              @PathVariable("userId") Long userId){
+        if (cartService.paymentCart(storeId, userId)){
+            return new ResponseEntity<>(new Message("success"),HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
+        }
+    }
 }
