@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -19,4 +20,8 @@ public interface ICartRepository extends JpaRepository<Cart,Long> {
     @Query(value="select c.id, c.price, c.product_id, c.quantity, c.user_id from cart as c join product on" +
             "  c.product_id = product.id where c.user_id = :userId and product.store_id = :storeId", nativeQuery=true)
     Iterable<Cart> findALlCartByStoreAndUser(@Param("userId") Long userId,@Param("storeId")  Long storeId);
+    @Modifying
+    @Transactional
+    @Query(value="delete c from cart as c join product on c.product_id = product.id where c.user_id = :userId and product.store_id = :storeId", nativeQuery=true)
+    void deleteAllCart(@Param("userId") Long userId, @Param("storeId") Long storeId);
 }

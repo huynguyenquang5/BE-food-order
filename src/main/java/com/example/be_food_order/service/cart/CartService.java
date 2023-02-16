@@ -46,4 +46,12 @@ public class CartService {
     public Iterable<Cart> findAllByStoreAndUser(Long storeId, Long userId) {
         return cartRepository.findALlCartByStoreAndUser(userId, storeId);
     }
+    public boolean deleteAllCart(Long userId, Long storeId) {
+        try {
+            cartRepository.deleteAllCart(userId, storeId);
+            return true;
+        }catch (Exception e) {
+            return false;
+        }
+    }
 }

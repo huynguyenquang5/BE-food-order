@@ -1,7 +1,6 @@
 package com.example.be_food_order.controller.cart;
 
 import com.example.be_food_order.model.cart.Cart;
-import com.example.be_food_order.model.message.Message;
 import com.example.be_food_order.service.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +22,20 @@ public class CartController {
     public ResponseEntity<Cart> save(@RequestBody Cart cart){
         return new ResponseEntity<>(cartService.save(cart), HttpStatus.CREATED);
     }
-    @DeleteMapping("/delete/user/{userId}/product/{productId}")
+    @DeleteMapping("/delete/one/user/{userId}/product/{productId}")
     public ResponseEntity<Cart> deleteOne(@PathVariable("userId") Long userId,
                                           @PathVariable("productId") Long productId){
         boolean check = cartService.deleteOneCart(userId, productId);
+        if (check){
+            return new ResponseEntity<>(new Cart(),HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/delete/all/store/{storeId}/user/{userId}")
+    public ResponseEntity<Cart> deleteAll(@PathVariable("userId") Long userId,
+                                          @PathVariable("storeId") Long storeId){
+        boolean check = cartService.deleteAllCart(userId, storeId);
         if (check){
             return new ResponseEntity<>(new Cart(),HttpStatus.OK);
         }else {
