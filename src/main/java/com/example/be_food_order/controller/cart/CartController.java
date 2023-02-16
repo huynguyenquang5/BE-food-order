@@ -52,20 +52,21 @@ public class CartController {
                                                                 @PathVariable("storeId") Long storeId){
         return new ResponseEntity<Iterable<Cart>>(cartService.findAllByStoreAndUser(storeId, userId),HttpStatus.OK);
     }
-    @GetMapping("/payment/1/{id}")
-    public ResponseEntity<String> total1(@PathVariable("id") Long id){
-        if (cartService.merchantApprovesPayment(id)){
-            return new ResponseEntity<>("success",HttpStatus.OK);
+    @GetMapping("/payment/{id}/action/{status}")
+    public ResponseEntity<Message> actionStatusPayment(@PathVariable("id") Long id,
+                                         @PathVariable("status") String status){
+        if (cartService.actionPayment(id,status)){
+            return new ResponseEntity<>(new Message("success"),HttpStatus.OK);
         }else {
-            return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/payment/2/{id}")
-    public ResponseEntity<String> total2(@PathVariable("id") Long id){
-        if (cartService.merchantCancelsPayment(id)){
-            return new ResponseEntity<>("success",HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
-        }
-    }
+//    @GetMapping("/payment/2/{id}")
+//    public ResponseEntity<String> total2(@PathVariable("id") Long id){
+//        if (cartService.userCancelsPayment(id)){
+//            return new ResponseEntity<>("success",HttpStatus.OK);
+//        }else {
+//            return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
+//        }
+//    }
 }

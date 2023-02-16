@@ -17,11 +17,7 @@ import com.example.be_food_order.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,7 +40,7 @@ public class CartService {
 
     public boolean save(Cart cart) {
         Optional<Product> product = productService.findOneById(cart.getProduct().getId());
-        Optional<Payment> payment = paymentRepository.findOne(cart.getUser().getId(),product.get().getStore().getId());
+        Optional<Payment> payment = paymentRepository.findOne(cart.getUser().getId(), product.get().getStore().getId());
         if (!payment.isPresent()) {
             Optional<Cart> cartCheck = cartRepository.findOne(cart.getUser().getId(), cart.getProduct().getId());
             if (cartCheck.isPresent()) {
@@ -54,7 +50,7 @@ public class CartService {
             } else {
                 return false;
             }
-        }else {
+        } else {
             return false;
         }
     }
@@ -92,12 +88,12 @@ public class CartService {
         Optional<User> user = userService.findOneById(userId);
         if (store.isPresent() && user.isPresent()) {
             try {
-                double price = cartRepository.totalPriceByPayment(user.get().getId(),store.get().getId());
-                paymentRepository.save(new Payment(0L,user.get(),store.get(), LocalDate.now(),price,null,1));
-                Payment payment = paymentRepository.findOne(user.get().getId(),store.get().getId()).get();
-                Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(),store.get().getId());
+                double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
+                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, null, 1));
+                Payment payment = paymentRepository.findOne(user.get().getId(), store.get().getId()).get();
+                Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
                 for (Cart cart : listCarts) {
-                    invoiceRepository.save(new Invoice(0L,cart.getQuantity(),cart.getProduct(),payment));
+                    invoiceRepository.save(new Invoice(0L, cart.getQuantity(), cart.getProduct(), payment));
                 }
                 return true;
             } catch (Exception e) {
@@ -107,23 +103,31 @@ public class CartService {
             return false;
         }
     }
-    public boolean merchantApprovesPayment(Long paymentId){
+
+    public boolean actionPayment(Long paymentId,String status) {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
-        if(payment.isPresent()){
-            Delivery delivery = deliveryRepository.findAll().get(0);
-            payment.get().setDelivery(delivery);
-            payment.get().setStatus(2);
+        if (payment.isPresent()) {
+            switch (status) {
+                case "approves":
+                    Delivery delivery = deliveryRepository.findAll().get(0);
+                    payment.get().setDelivery(delivery);
+                    payment.get().setStatus(2);
+                    break;
+                case "success":
+                    payment.get().setStatus(3);
+                    break;
+                case "cancels":
+                    if (payment.get().getStatus() == 1) {
+                        payment.get().setStatus(0);
+                    }else {
+                        return false;
+                    }
+                    break;
+                default:
+                    payment.get().setStatus(0);
+            }
             return true;
-        }else {
-            return false;
-        }
-    }
-    public boolean merchantCancelsPayment(Long paymentId){
-        Optional<Payment> payment = paymentRepository.findById(paymentId);
-        if(payment.isPresent()){
-            payment.get().setStatus(0);
-            return true;
-        }else {
+        } else {
             return false;
         }
     }
