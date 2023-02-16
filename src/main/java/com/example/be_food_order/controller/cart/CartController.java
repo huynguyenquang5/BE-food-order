@@ -1,6 +1,7 @@
 package com.example.be_food_order.controller.cart;
 
 import com.example.be_food_order.model.cart.Cart;
+import com.example.be_food_order.model.message.Message;
 import com.example.be_food_order.service.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,11 @@ public class CartController {
         return new ResponseEntity<>(cartService.findAll(), HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<String> save(@RequestBody Cart cart){
+    public ResponseEntity<Message> save(@RequestBody Cart cart){
         if (cartService.save(cart)){
-            return new ResponseEntity<>("ok", HttpStatus.CREATED);
+            return new ResponseEntity<>(new Message("ok"), HttpStatus.CREATED);
         }else {
-        return new ResponseEntity<>("error", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
         }
     }
     @DeleteMapping("/delete/one/user/{userId}/product/{productId}")
@@ -51,5 +52,20 @@ public class CartController {
                                                                 @PathVariable("storeId") Long storeId){
         return new ResponseEntity<Iterable<Cart>>(cartService.findAllByStoreAndUser(storeId, userId),HttpStatus.OK);
     }
-
+    @GetMapping("/payment/1/{id}")
+    public ResponseEntity<String> total1(@PathVariable("id") Long id){
+        if (cartService.merchantApprovesPayment(id)){
+            return new ResponseEntity<>("success",HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/payment/2/{id}")
+    public ResponseEntity<String> total2(@PathVariable("id") Long id){
+        if (cartService.merchantCancelsPayment(id)){
+            return new ResponseEntity<>("success",HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
+        }
+    }
 }

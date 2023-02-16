@@ -90,11 +90,10 @@ public class CartService {
     public boolean paymentCart(Long storeId, Long userId) {
         Optional<Store> store = storeService.findOneById(storeId);
         Optional<User> user = userService.findOneById(userId);
-        Delivery delivery = deliveryRepository.findAll().get(0);
         if (store.isPresent() && user.isPresent()) {
             try {
                 double price = cartRepository.totalPriceByPayment(user.get().getId(),store.get().getId());
-                paymentRepository.save(new Payment(0L,user.get(),store.get(), LocalDate.now(),price,delivery,1));
+                paymentRepository.save(new Payment(0L,user.get(),store.get(), LocalDate.now(),price,null,1));
                 Payment payment = paymentRepository.findOne(user.get().getId(),store.get().getId()).get();
                 Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(),store.get().getId());
                 for (Cart cart : listCarts) {
@@ -108,5 +107,24 @@ public class CartService {
             return false;
         }
     }
-
+    public boolean merchantApprovesPayment(Long paymentId){
+        Optional<Payment> payment = paymentRepository.findById(paymentId);
+        if(payment.isPresent()){
+            Delivery delivery = deliveryRepository.findAll().get(0);
+            payment.get().setDelivery(delivery);
+            payment.get().setStatus(2);
+            return true;
+        }else {
+            return false;
+        }
+    }
+    public boolean merchantCancelsPayment(Long paymentId){
+        Optional<Payment> payment = paymentRepository.findById(paymentId);
+        if(payment.isPresent()){
+            payment.get().setStatus(0);
+            return true;
+        }else {
+            return false;
+        }
+    }
 }
