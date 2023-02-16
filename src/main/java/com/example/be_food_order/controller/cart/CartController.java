@@ -19,8 +19,12 @@ public class CartController {
         return new ResponseEntity<>(cartService.findAll(), HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<Cart> save(@RequestBody Cart cart){
-        return new ResponseEntity<>(cartService.save(cart), HttpStatus.CREATED);
+    public ResponseEntity<String> save(@RequestBody Cart cart){
+        if (cartService.save(cart)){
+            return new ResponseEntity<>("ok", HttpStatus.CREATED);
+        }else {
+        return new ResponseEntity<>("error", HttpStatus.NOT_FOUND);
+        }
     }
     @DeleteMapping("/delete/one/user/{userId}/product/{productId}")
     public ResponseEntity<Cart> deleteOne(@PathVariable("userId") Long userId,
@@ -47,4 +51,5 @@ public class CartController {
                                                                 @PathVariable("storeId") Long storeId){
         return new ResponseEntity<Iterable<Cart>>(cartService.findAllByStoreAndUser(storeId, userId),HttpStatus.OK);
     }
+
 }

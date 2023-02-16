@@ -24,4 +24,8 @@ public interface ICartRepository extends JpaRepository<Cart,Long> {
     @Transactional
     @Query(value="delete c from cart as c join product on c.product_id = product.id where c.user_id = :userId and product.store_id = :storeId", nativeQuery=true)
     void deleteAllCart(@Param("userId") Long userId, @Param("storeId") Long storeId);
+    @Query(value="select sum(pm.price*c.quantity) from cart as c join product as p on  c.product_id = p.id \n" +
+            "\t join product_method as pm on p.product_method_id = pm.id \n" +
+            "\t where c.user_id = :userId and p.store_id = :storeId ", nativeQuery=true)
+    double totalPriceByPayment(@Param("userId") Long userId,@Param("storeId")  Long storeId);
 }

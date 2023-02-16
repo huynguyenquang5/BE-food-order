@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDate;
 
 
 @Entity
@@ -23,7 +24,7 @@ public class Payment {
     @ManyToOne
     private Store store;
     @NotNull
-    private Date date;
+    private LocalDate date;
     @NotNull
     private double price;
     @ManyToOne
