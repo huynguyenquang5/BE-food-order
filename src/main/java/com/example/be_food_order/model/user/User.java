@@ -37,4 +37,5 @@ public class User {
     private Integer status = 1;
     @ManyToMany()
     private Set<Role> roles;
+    private String confirmPassword;
 }
