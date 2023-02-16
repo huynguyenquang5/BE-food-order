@@ -1,7 +1,7 @@
 package com.example.be_food_order.service.product;
 
 import com.example.be_food_order.model.product.Product;
-import com.example.be_food_order.repository.IStoreRepository;
+import com.example.be_food_order.repository.store.IStoreRepository;
 import com.example.be_food_order.repository.product.IProductRepository;
 import com.example.be_food_order.service.ICRUDService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,14 +1,15 @@
-package com.example.be_food_order.service;
+package com.example.be_food_order.service.store;
 
 import com.example.be_food_order.model.store.Store;
-import com.example.be_food_order.repository.IStoreRepository;
+import com.example.be_food_order.repository.store.IStoreRepository;
+import com.example.be_food_order.service.ICRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class StoreService implements ICRUDService<Store, Long>{
+public class StoreService implements ICRUDService<Store, Long> {
     @Autowired
     private IStoreRepository storeRepository;
     @Override

@@ -65,7 +65,7 @@ public class ImageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/delete/product/{id}")
-    public ResponseEntity<String> deleteAllByProduct(@PathVariable Long id){
+    public ResponseEntity<String> deleteAllByImage(@PathVariable Long id){
         Optional<Product> product = productService.findOneById(id);
         if(product.isPresent()) {
             boolean checkImg = imageService.deleteAllByProduct(product.get());

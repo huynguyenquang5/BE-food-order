@@ -1,4 +1,4 @@
-package com.example.be_food_order.repository;
+package com.example.be_food_order.repository.store;
 
 import com.example.be_food_order.model.store.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
