@@ -50,9 +50,11 @@ public class CartService {
             if (cartCheck.isPresent()) {
                 cartCheck.get().setQuantity(cartCheck.get().getQuantity() + 1);
                 cartCheck.get().setPrice(cartCheck.get().getProduct().getProductMethod().getPrice() * cartCheck.get().getQuantity());
+                cartRepository.save(cartCheck.get());
                 return true;
             } else {
-                return false;
+                cartRepository.save(cart);
+                return true;
             }
         } else {
             return false;
@@ -68,6 +70,21 @@ public class CartService {
         if (cartCheck.isPresent()) {
             cartRepository.deleteOneCart(userId, productId);
             return true;
+        } else {
+            return false;
+        }
+    }
+public boolean changeQuantityOneCart(Long userId, Long productId) {
+        Optional<Cart> cartCheck = cartRepository.findOne(userId, productId);
+        if (cartCheck.isPresent()) {
+            if (cartCheck.get().getQuantity() >1){
+            cartCheck.get().setQuantity(cartCheck.get().getQuantity() - 1);
+            cartCheck.get().setPrice(cartCheck.get().getQuantity()*cartCheck.get().getProduct().getProductMethod().getPrice());
+            cartRepository.save(cartCheck.get());
+            return true;
+            }else {
+                return false;
+            }
         } else {
             return false;
         }

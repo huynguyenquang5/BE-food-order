@@ -24,13 +24,23 @@ public class CartController {
         if (cartService.save(cart)){
             return new ResponseEntity<>(new Message("success"), HttpStatus.CREATED);
         }else {
-        return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
         }
     }
     @DeleteMapping("/delete/one/user/{userId}/product/{productId}")
     public ResponseEntity<Cart> deleteOne(@PathVariable("userId") Long userId,
                                           @PathVariable("productId") Long productId){
         boolean check = cartService.deleteOneCart(userId, productId);
+        if (check){
+            return new ResponseEntity<>(new Cart(),HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/quantity/one/user/{userId}/product/{productId}")
+    public ResponseEntity<Cart> changeOneQuantity(@PathVariable("userId") Long userId,
+                                          @PathVariable("productId") Long productId){
+        boolean check = cartService.changeQuantityOneCart(userId, productId);
         if (check){
             return new ResponseEntity<>(new Cart(),HttpStatus.OK);
         }else {
