@@ -49,33 +49,9 @@ public class UserController {
         return new ResponseEntity<>(userService.findOneById(id).get(), HttpStatus.OK);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> create(@RequestBody User user){
-        Optional<User> checkUser = userService.findByUsername(user.getUsername());
-        String encodePassword;
-        encodePassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodePassword);
-        if(!checkUser.isPresent()){
-            Role role = roleService.findByName("BUYER");
-            user.setRoles(new HashSet<>());
-            user.getRoles().add(role);
-            return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
     @GetMapping("/roles")
     public ResponseEntity<Iterable<Role>> findAllRoles(){
         return new ResponseEntity<>(roleService.findAll(), HttpStatus.OK);
-    }
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtService.generateTokenLogin(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User currentUser = userService.findByUsername(user.getUsername()).get();
-        return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), currentUser.getUsername(), userDetails.getAuthorities()));
     }
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {

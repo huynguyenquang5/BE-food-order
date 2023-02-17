@@ -2,15 +2,14 @@ package com.example.be_food_order.controller.product;
 
 import com.example.be_food_order.model.product.Image;
 import com.example.be_food_order.model.product.Product;
+import com.example.be_food_order.model.product.ProductMethod;
 import com.example.be_food_order.service.product.ImageService;
 import com.example.be_food_order.service.product.ProductMethodService;
 import com.example.be_food_order.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +24,23 @@ public class ImageController {
     private ProductService productService;
     @Autowired
     private ProductMethodService productMethodService;
-    @PostMapping("create")
-    public ResponseEntity<Image> createProduct(@RequestBody Image image){
+    @PostMapping("/create")
+    public ResponseEntity<Image> createImage(@RequestBody Image image){
+        productMethodService.save(image.getProduct().getProductMethod());
+        ProductMethod productMethod = productMethodService.findLast();
+        Product product = image.getProduct();
+        product.setProductMethod(productMethod);
+        productService.save(product);
+        product = productService.findLast();
+        image.setProduct(product);
+        return new ResponseEntity<>(imageService.save(image), HttpStatus.CREATED);
+    }
+    @PostMapping("/add")
+    public ResponseEntity<Image> addImage(@RequestBody Image image){
         return new ResponseEntity<>(imageService.save(image), HttpStatus.CREATED);
     }
     @GetMapping()
-    public ResponseEntity<Iterable<Image>> findAllProduct(){
+    public ResponseEntity<Iterable<Image>> findAllImage(){
         return new ResponseEntity<>(imageService.findAll(), HttpStatus.OK);
     }
     @GetMapping("/product/{id}")
@@ -64,6 +74,7 @@ public class ImageController {
         imageService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
     @DeleteMapping("/delete/product/{id}")
     public ResponseEntity<String> deleteAllByImage(@PathVariable Long id){
         Optional<Product> product = productService.findOneById(id);

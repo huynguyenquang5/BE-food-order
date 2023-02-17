@@ -1,7 +1,9 @@
 package com.example.be_food_order.controller.admin;
 
+import com.example.be_food_order.model.product.Product;
 import com.example.be_food_order.model.user.User;
 import com.example.be_food_order.service.admin.AdminService;
+import com.example.be_food_order.service.product.ProductService;
 import com.example.be_food_order.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,9 @@ public class AdminController {
     private AdminService adminService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ProductService productService;
+
 
     @GetMapping("/users")
     public ResponseEntity<Iterable<User>> findAllUser() {
@@ -52,5 +57,9 @@ public class AdminController {
         }
         adminService.addRoleMerchantPartner(id);
         return new ResponseEntity<>(userService.save(user.get()), HttpStatus.OK);
+    }
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Iterable<Product>> findAllProductByCategory(@PathVariable Long id){
+        return new ResponseEntity<>(productService.findAllByProductMethodCategoryId(id), HttpStatus.OK);
     }
 }
