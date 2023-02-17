@@ -35,6 +35,10 @@ public class ImageController {
         image.setProduct(product);
         return new ResponseEntity<>(imageService.save(image), HttpStatus.CREATED);
     }
+    @PostMapping("/add")
+    public ResponseEntity<Image> addImage(@RequestBody Image image){
+        return new ResponseEntity<>(imageService.save(image), HttpStatus.CREATED);
+    }
     @GetMapping()
     public ResponseEntity<Iterable<Image>> findAllImage(){
         return new ResponseEntity<>(imageService.findAll(), HttpStatus.OK);

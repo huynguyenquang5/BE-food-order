@@ -56,4 +56,10 @@ public class ProductService implements ICRUDService<Product, Long> {
             return false;
         }
     }
+    public Iterable<Product> findAllByProductMethodCategoryId(Long id){
+        return productRepository.findAllByProductMethod_Category_Id(id);
+    }
+    public Iterable<Product> findAllByName(String name){
+        return productRepository.findAllByNameContaining(name);
+    }
 }

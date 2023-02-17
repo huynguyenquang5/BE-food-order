@@ -63,4 +63,8 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/search/{name}")
+    public ResponseEntity<Iterable<Product>> findAllByName(@PathVariable String name){
+        return new ResponseEntity<>(productService.findAllByName(name), HttpStatus.OK);
+    }
 }

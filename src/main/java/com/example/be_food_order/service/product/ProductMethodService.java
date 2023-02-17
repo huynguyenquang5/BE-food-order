@@ -6,6 +6,7 @@ import com.example.be_food_order.service.ICRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 @Service
 public class ProductMethodService implements ICRUDService<ProductMethod, Long> {
@@ -40,5 +41,8 @@ public class ProductMethodService implements ICRUDService<ProductMethod, Long> {
         }catch (Exception e){
             return false;
         }
+    }
+    public List<Long> findIdByCategoryId(Long id){
+        return productMethodRepository.findIdProductMethod(id);
     }
 }
