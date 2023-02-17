@@ -6,11 +6,13 @@ import com.example.be_food_order.model.cart.Payment;
 import com.example.be_food_order.model.product.Product;
 import com.example.be_food_order.model.store.Delivery;
 import com.example.be_food_order.model.store.Store;
+import com.example.be_food_order.model.user.Address;
 import com.example.be_food_order.model.user.User;
 import com.example.be_food_order.repository.cart.ICartRepository;
 import com.example.be_food_order.repository.cart.IDeliveryRepository;
 import com.example.be_food_order.repository.cart.IInvoiceRepository;
 import com.example.be_food_order.repository.cart.IPaymentRepository;
+import com.example.be_food_order.repository.user.IAddressRepository;
 import com.example.be_food_order.service.product.ProductService;
 import com.example.be_food_order.service.store.StoreService;
 import com.example.be_food_order.service.user.UserService;
@@ -31,6 +33,8 @@ public class CartService {
     private IInvoiceRepository invoiceRepository;
     @Autowired
     private IDeliveryRepository deliveryRepository;
+    @Autowired
+    private IAddressRepository addressRepository;
     @Autowired
     private StoreService storeService;
     @Autowired
@@ -83,13 +87,14 @@ public class CartService {
     }
 
     @Transactional
-    public boolean paymentCart(Long storeId, Long userId) {
+    public boolean paymentCart(Long storeId, Long userId, Long addressId) {
         Optional<Store> store = storeService.findOneById(storeId);
         Optional<User> user = userService.findOneById(userId);
+        Optional<Address> address = addressRepository.findById(addressId);
         if (store.isPresent() && user.isPresent()) {
             try {
                 double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
-                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, null, 1));
+                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, null,address.get(), 1));
                 Payment payment = paymentRepository.findOne(user.get().getId(), store.get().getId()).get();
                 Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
                 for (Cart cart : listCarts) {

@@ -22,7 +22,7 @@ public class CartController {
     @PostMapping
     public ResponseEntity<Message> save(@RequestBody Cart cart){
         if (cartService.save(cart)){
-            return new ResponseEntity<>(new Message("ok"), HttpStatus.CREATED);
+            return new ResponseEntity<>(new Message("success"), HttpStatus.CREATED);
         }else {
         return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
         }
@@ -48,8 +48,8 @@ public class CartController {
         }
     }
     @GetMapping("/store/{storeId}/user/{userId}")
-    public ResponseEntity<Iterable<Cart>> findAllByStoreAndUser(@PathVariable("userId") Long userId,
-                                                                @PathVariable("storeId") Long storeId){
+    public ResponseEntity<Iterable<Cart>> findAllByStoreAndUser(@PathVariable("storeId") Long storeId,
+                                                                @PathVariable("userId") Long userId){
         return new ResponseEntity<Iterable<Cart>>(cartService.findAllByStoreAndUser(storeId, userId),HttpStatus.OK);
     }
     @GetMapping("/payment/{id}/action/{status}")
@@ -61,10 +61,11 @@ public class CartController {
             return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/payment-cart/store/{storeId}/user/{userId}")
+    @GetMapping("/payment-cart/store/{storeId}/user/{userId}/address/{addressId}")
     public ResponseEntity<Message> paymentCart(@PathVariable("storeId") Long storeId,
-                                              @PathVariable("userId") Long userId){
-        if (cartService.paymentCart(storeId, userId)){
+                                              @PathVariable("userId") Long userId,
+                                               @PathVariable("addressId") Long addressId){
+        if (cartService.paymentCart(storeId, userId,addressId)){
             return new ResponseEntity<>(new Message("success"),HttpStatus.OK);
         }else {
             return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
