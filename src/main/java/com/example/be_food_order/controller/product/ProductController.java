@@ -20,17 +20,7 @@ public class ProductController {
     private ProductMethodService productMethodService;
     @Autowired
     private ImageService imageService;
-    @PostMapping("/create")
-    public ResponseEntity<Image> createImage(@RequestBody Image image){
-        productMethodService.save(image.getProduct().getProductMethod());
-        ProductMethod productMethod = productMethodService.findLast();
-        Product product = image.getProduct();
-        product.setProductMethod(productMethod);
-        productService.save(product);
-        product = productService.findLast();
-        image.setProduct(product);
-        return new ResponseEntity<>(imageService.save(image), HttpStatus.CREATED);
-    }
+
 
     @GetMapping()
     public ResponseEntity<Iterable<Product>> findAllProduct(){
@@ -54,11 +44,6 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Product> findById(@PathVariable Long id){
-//        return new ResponseEntity<>(productService.findOneById(id).get(), HttpStatus.OK);
-//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
