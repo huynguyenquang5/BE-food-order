@@ -1,6 +1,6 @@
-package com.example.be_food_order.controller;
+package com.example.be_food_order.controller.store;
 import com.example.be_food_order.model.store.Store;
-import com.example.be_food_order.service.StoreService;
+import com.example.be_food_order.service.store.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/store")
 @CrossOrigin("*")
-public class storeController {
+public class StoreController {
     @Autowired
     private StoreService storeService;
     @GetMapping("/{id}")

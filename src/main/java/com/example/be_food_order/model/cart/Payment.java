@@ -1,13 +1,15 @@
 package com.example.be_food_order.model.cart;
 import com.example.be_food_order.model.store.Delivery;
 import com.example.be_food_order.model.store.Store;
+import com.example.be_food_order.model.user.Address;
 import com.example.be_food_order.model.user.User;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 
 
 @Entity
@@ -23,11 +25,13 @@ public class Payment {
     @ManyToOne
     private Store store;
     @NotNull
-    private Date date;
+    private LocalDate date;
     @NotNull
     private double price;
     @ManyToOne
     private Delivery delivery;
+    @ManyToOne
+    private Address address;
     @NotNull
     private int status;
 }
