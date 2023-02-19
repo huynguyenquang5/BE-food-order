@@ -2,26 +2,17 @@ package com.example.be_food_order.controller.user;
 
 import com.example.be_food_order.model.user.Role;
 import com.example.be_food_order.model.user.User;
-import com.example.be_food_order.sercurity.jwt.JwtResponse;
 import com.example.be_food_order.sercurity.jwt.JwtService;
 import com.example.be_food_order.service.user.RoleService;
 import com.example.be_food_order.service.user.UserService;
-import org.jetbrains.annotations.ApiStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
+
 
 @RestController
 @RequestMapping("/users")
@@ -61,6 +52,14 @@ public class UserController {
         }
         user.setId(userOptional.get().getId());
         return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
+    }
+    @GetMapping("/{username}")
+    public ResponseEntity<User> findUserByName(@PathVariable String username){
+        if (!userService.findByUsername(username).isPresent()){
+            return new ResponseEntity<>(userService.findByUsername(username).get(), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }
