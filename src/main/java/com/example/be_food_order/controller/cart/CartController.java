@@ -22,15 +22,25 @@ public class CartController {
     @PostMapping
     public ResponseEntity<Message> save(@RequestBody Cart cart){
         if (cartService.save(cart)){
-            return new ResponseEntity<>(new Message("ok"), HttpStatus.CREATED);
+            return new ResponseEntity<>(new Message("success"), HttpStatus.CREATED);
         }else {
-        return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
         }
     }
     @DeleteMapping("/delete/one/user/{userId}/product/{productId}")
     public ResponseEntity<Cart> deleteOne(@PathVariable("userId") Long userId,
                                           @PathVariable("productId") Long productId){
         boolean check = cartService.deleteOneCart(userId, productId);
+        if (check){
+            return new ResponseEntity<>(new Cart(),HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/quantity/one/user/{userId}/product/{productId}")
+    public ResponseEntity<Cart> changeOneQuantity(@PathVariable("userId") Long userId,
+                                          @PathVariable("productId") Long productId){
+        boolean check = cartService.changeQuantityOneCart(userId, productId);
         if (check){
             return new ResponseEntity<>(new Cart(),HttpStatus.OK);
         }else {
@@ -48,8 +58,8 @@ public class CartController {
         }
     }
     @GetMapping("/store/{storeId}/user/{userId}")
-    public ResponseEntity<Iterable<Cart>> findAllByStoreAndUser(@PathVariable("userId") Long userId,
-                                                                @PathVariable("storeId") Long storeId){
+    public ResponseEntity<Iterable<Cart>> findAllByStoreAndUser(@PathVariable("storeId") Long storeId,
+                                                                @PathVariable("userId") Long userId){
         return new ResponseEntity<Iterable<Cart>>(cartService.findAllByStoreAndUser(storeId, userId),HttpStatus.OK);
     }
     @GetMapping("/payment/{id}/action/{status}")
@@ -61,10 +71,11 @@ public class CartController {
             return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping("/payment-cart/store/{storeId}/user/{userId}")
+    @GetMapping("/payment-cart/store/{storeId}/user/{userId}/address/{addressId}")
     public ResponseEntity<Message> paymentCart(@PathVariable("storeId") Long storeId,
-                                              @PathVariable("userId") Long userId){
-        if (cartService.paymentCart(storeId, userId)){
+                                              @PathVariable("userId") Long userId,
+                                               @PathVariable("addressId") Long addressId){
+        if (cartService.paymentCart(storeId, userId,addressId)){
             return new ResponseEntity<>(new Message("success"),HttpStatus.OK);
         }else {
             return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);

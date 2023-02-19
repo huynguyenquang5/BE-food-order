@@ -6,11 +6,13 @@ import com.example.be_food_order.model.cart.Payment;
 import com.example.be_food_order.model.product.Product;
 import com.example.be_food_order.model.store.Delivery;
 import com.example.be_food_order.model.store.Store;
+import com.example.be_food_order.model.user.Address;
 import com.example.be_food_order.model.user.User;
 import com.example.be_food_order.repository.cart.ICartRepository;
 import com.example.be_food_order.repository.cart.IDeliveryRepository;
 import com.example.be_food_order.repository.cart.IInvoiceRepository;
 import com.example.be_food_order.repository.cart.IPaymentRepository;
+import com.example.be_food_order.repository.user.IAddressRepository;
 import com.example.be_food_order.service.product.ProductService;
 import com.example.be_food_order.service.store.StoreService;
 import com.example.be_food_order.service.user.UserService;
@@ -32,6 +34,8 @@ public class CartService {
     @Autowired
     private IDeliveryRepository deliveryRepository;
     @Autowired
+    private IAddressRepository addressRepository;
+    @Autowired
     private StoreService storeService;
     @Autowired
     private UserService userService;
@@ -46,9 +50,11 @@ public class CartService {
             if (cartCheck.isPresent()) {
                 cartCheck.get().setQuantity(cartCheck.get().getQuantity() + 1);
                 cartCheck.get().setPrice(cartCheck.get().getProduct().getProductMethod().getPrice() * cartCheck.get().getQuantity());
+                cartRepository.save(cartCheck.get());
                 return true;
             } else {
-                return false;
+                cartRepository.save(cart);
+                return true;
             }
         } else {
             return false;
@@ -68,6 +74,21 @@ public class CartService {
             return false;
         }
     }
+public boolean changeQuantityOneCart(Long userId, Long productId) {
+        Optional<Cart> cartCheck = cartRepository.findOne(userId, productId);
+        if (cartCheck.isPresent()) {
+            if (cartCheck.get().getQuantity() >1){
+            cartCheck.get().setQuantity(cartCheck.get().getQuantity() - 1);
+            cartCheck.get().setPrice(cartCheck.get().getQuantity()*cartCheck.get().getProduct().getProductMethod().getPrice());
+            cartRepository.save(cartCheck.get());
+            return true;
+            }else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
     public Iterable<Cart> findAllByStoreAndUser(Long storeId, Long userId) {
         return cartRepository.findALlCartByStoreAndUser(userId, storeId);
@@ -83,13 +104,14 @@ public class CartService {
     }
 
     @Transactional
-    public boolean paymentCart(Long storeId, Long userId) {
+    public boolean paymentCart(Long storeId, Long userId, Long addressId) {
         Optional<Store> store = storeService.findOneById(storeId);
         Optional<User> user = userService.findOneById(userId);
+        Optional<Address> address = addressRepository.findById(addressId);
         if (store.isPresent() && user.isPresent()) {
             try {
                 double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
-                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, null, 1));
+                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, null,address.get(), 1));
                 Payment payment = paymentRepository.findOne(user.get().getId(), store.get().getId()).get();
                 Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
                 for (Cart cart : listCarts) {
