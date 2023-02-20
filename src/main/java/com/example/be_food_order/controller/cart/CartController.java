@@ -1,13 +1,17 @@
 package com.example.be_food_order.controller.cart;
 
 import com.example.be_food_order.model.cart.Cart;
+import com.example.be_food_order.model.cart.Invoice;
 import com.example.be_food_order.model.cart.Payment;
 import com.example.be_food_order.model.message.Message;
 import com.example.be_food_order.service.cart.CartService;
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.ObjPtr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cart")
@@ -85,5 +89,23 @@ public class CartController {
     @GetMapping("/payment-order/user/{userId}")
     public ResponseEntity<Iterable<Payment>> findAllPaymentByUser(@PathVariable("userId") Long userId){
         return new ResponseEntity<Iterable<Payment>>(cartService.findAllPaymentByUser(userId),HttpStatus.OK);
+    }
+    @GetMapping("/payment-detail/payment/{paymentId}")
+    public ResponseEntity<Payment> findPaymentById(@PathVariable("paymentId") Long paymentId){
+        Optional<Payment> payment = cartService.findPaymentById(paymentId);
+        if(payment.isPresent()){
+            return new ResponseEntity<>(payment.get(),HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("/payment-detail/payment/{paymentId}/list-invoice")
+    public ResponseEntity<Iterable<Invoice>> listInvoiceByPayment(@PathVariable("paymentId") Long paymentId){
+        Iterable<Invoice> invoices = cartService.findAllByPayment(paymentId);
+        if(null != invoices){
+            return new ResponseEntity<>(invoices,HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

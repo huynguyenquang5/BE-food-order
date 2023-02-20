@@ -119,7 +119,7 @@ public class CartService {
         if (store.isPresent() && user.isPresent() && address.isPresent()) {
             try {
                 double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
-                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, code, null, address.get(), 1));
+                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price+10, code, null, address.get(), 1));
                 Optional<Payment> payment = paymentRepository.findOneByCode(user.get().getId(), store.get().getId(), code);
                 if (payment.isPresent()) {
                     Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
@@ -182,5 +182,16 @@ public class CartService {
             code.append(ThreadLocalRandom.current().nextInt(0, 10));
         }
         return code.toString();
+    }
+    public  Optional<Payment> findPaymentById(Long id){
+       return paymentRepository.findById(id);
+    }
+    public Iterable<Invoice> findAllByPayment(Long paymentId){
+        Optional<Payment> payment = paymentRepository.findById(paymentId);
+        if  (payment.isPresent()) {
+            return invoiceRepository.findAllByPaymentId(payment.get().getId());
+        }else {
+            return null;
+        }
     }
 }
