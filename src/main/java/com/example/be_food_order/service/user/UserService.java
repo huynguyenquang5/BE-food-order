@@ -1,7 +1,9 @@
 package com.example.be_food_order.service.user;
 
+import com.example.be_food_order.model.user.Address;
 import com.example.be_food_order.model.user.User;
 import com.example.be_food_order.model.user.UserPrinciple;
+import com.example.be_food_order.repository.user.IAddressRepository;
 import com.example.be_food_order.repository.user.IUserRepository;
 import com.example.be_food_order.service.ICRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.Optional;
 public class UserService implements ICRUDService<User, Long>, UserDetailsService {
     @Autowired
     private IUserRepository userRepository;
+    @Autowired
+    private IAddressRepository addressRepository;
     @Override
     public Iterable<User> findAll() {
         return userRepository.findAll();
@@ -45,5 +49,22 @@ public class UserService implements ICRUDService<User, Long>, UserDetailsService
             throw new UsernameNotFoundException(username);
         }
         return UserPrinciple.build(userOptional.get());
+    }
+    public Address saveAddress(Address address){
+        return addressRepository.save(address);
+    }
+    public Iterable<Address> findAllAddressByUser(Long userId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            return addressRepository.findAllByUserId(userOptional.get().getId());
+        }else {
+            return null;
+        }
+    }
+    public void deleteAddressById(Long id){
+        Optional<Address> address = addressRepository.findById(id);
+        if (address.isPresent()) {
+            addressRepository.deleteById(address.get().getId());
+        }
     }
 }

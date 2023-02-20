@@ -19,8 +19,11 @@ import com.example.be_food_order.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Transactional
@@ -74,15 +77,16 @@ public class CartService {
             return false;
         }
     }
-public boolean changeQuantityOneCart(Long userId, Long productId) {
+
+    public boolean changeQuantityOneCart(Long userId, Long productId) {
         Optional<Cart> cartCheck = cartRepository.findOne(userId, productId);
         if (cartCheck.isPresent()) {
-            if (cartCheck.get().getQuantity() >1){
-            cartCheck.get().setQuantity(cartCheck.get().getQuantity() - 1);
-            cartCheck.get().setPrice(cartCheck.get().getQuantity()*cartCheck.get().getProduct().getProductMethod().getPrice());
-            cartRepository.save(cartCheck.get());
-            return true;
-            }else {
+            if (cartCheck.get().getQuantity() > 1) {
+                cartCheck.get().setQuantity(cartCheck.get().getQuantity() - 1);
+                cartCheck.get().setPrice(cartCheck.get().getQuantity() * cartCheck.get().getProduct().getProductMethod().getPrice());
+                cartRepository.save(cartCheck.get());
+                return true;
+            } else {
                 return false;
             }
         } else {
@@ -108,16 +112,21 @@ public boolean changeQuantityOneCart(Long userId, Long productId) {
         Optional<Store> store = storeService.findOneById(storeId);
         Optional<User> user = userService.findOneById(userId);
         Optional<Address> address = addressRepository.findById(addressId);
-        if (store.isPresent() && user.isPresent()) {
+        String code = codePayment();
+        if (store.isPresent() && user.isPresent() && address.isPresent()) {
             try {
                 double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
-                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, null,address.get(), 1));
-                Payment payment = paymentRepository.findOne(user.get().getId(), store.get().getId()).get();
-                Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
-                for (Cart cart : listCarts) {
-                    invoiceRepository.save(new Invoice(0L, cart.getQuantity(), cart.getProduct(), payment));
+                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, code, null, address.get(), 1));
+                Optional<Payment> payment = paymentRepository.findOneByCode(user.get().getId(), store.get().getId(), code);
+                if (payment.isPresent()) {
+                    Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
+                    for (Cart cart : listCarts) {
+                        invoiceRepository.save(new Invoice(0L, cart.getQuantity(), cart.getProduct(), payment.get()));
+                    }
+                    return true;
+                } else {
+                    return false;
                 }
-                return true;
             } catch (Exception e) {
                 return false;
             }
@@ -126,7 +135,7 @@ public boolean changeQuantityOneCart(Long userId, Long productId) {
         }
     }
 
-    public boolean actionPayment(Long paymentId,String status) {
+    public boolean actionPayment(Long paymentId, String status) {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
         if (payment.isPresent()) {
             switch (status) {
@@ -134,15 +143,15 @@ public boolean changeQuantityOneCart(Long userId, Long productId) {
                     Delivery delivery = deliveryRepository.findAll().get(0);
                     payment.get().setDelivery(delivery);
                     payment.get().setStatus(2);
-                    deleteAllCart(payment.get().getUser().getId(),payment.get().getStore().getId());
+                    deleteAllCart(payment.get().getUser().getId(), payment.get().getStore().getId());
                     break;
                 case "success":
                     payment.get().setStatus(3);
                     break;
-                case "cancels":
+                case "cancel":
                     if (payment.get().getStatus() == 1) {
                         payment.get().setStatus(0);
-                    }else {
+                    } else {
                         return false;
                     }
                     break;
@@ -154,4 +163,22 @@ public boolean changeQuantityOneCart(Long userId, Long productId) {
             return false;
         }
     }
+
+    public Iterable<Payment> findAllPaymentByUser(Long userId) {
+        Optional<User> user = userService.findOneById(userId);
+        if (user.isPresent()) {
+            return paymentRepository.findAllByUserId(user.get().getId());
+        } else {
+            return null;
+        }
+    }
+
+    private String codePayment() {
+        StringBuilder code = new StringBuilder("CG");
+        for (int i = 0; i < 5; i++) {
+            code.append(ThreadLocalRandom.current().nextInt(0, 10));
+        }
+        return code.toString();
+    }
 }
+

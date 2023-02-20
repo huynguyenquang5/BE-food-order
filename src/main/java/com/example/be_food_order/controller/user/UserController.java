@@ -1,5 +1,7 @@
 package com.example.be_food_order.controller.user;
 
+import com.example.be_food_order.model.message.Message;
+import com.example.be_food_order.model.user.Address;
 import com.example.be_food_order.model.user.Role;
 import com.example.be_food_order.model.user.User;
 import com.example.be_food_order.sercurity.jwt.JwtResponse;
@@ -62,5 +64,17 @@ public class UserController {
         user.setId(userOptional.get().getId());
         return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
     }
-
+    @PostMapping("/address")
+    public ResponseEntity<Address> saveAddress(@RequestBody Address address){
+        return new ResponseEntity<>(userService.saveAddress(address), HttpStatus.OK);
+    }
+    @GetMapping("/address/user/{userId}")
+    public ResponseEntity<Iterable<Address>> findAllAddressByUser(@PathVariable Long userId){
+        return new ResponseEntity<>(userService.findAllAddressByUser(userId), HttpStatus.OK);
+    }
+    @DeleteMapping("/address/{id}")
+    public ResponseEntity<Message> deleteAddressByUser(@PathVariable Long id){
+        userService.deleteAddressById(id);
+        return new ResponseEntity<>(new Message("done"), HttpStatus.OK);
+    }
 }

@@ -11,6 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface IPaymentRepository extends JpaRepository<Payment,Long> {
-    @Query(value="select * from payment where (payment.store_id = :storeId and payment.user_id = :userId) and (payment.status = 1) ", nativeQuery=true)
+    @Query(value="select * from payment where (payment.store_id = :storeId and payment.user_id = :userId) and (payment.status = 1 ) ", nativeQuery=true)
     Optional<Payment> findOne(@Param("userId") Long userId, @Param("storeId")  Long storeId);
+    @Query(value="select * from payment where (payment.store_id = :storeId and payment.user_id = :userId) and (payment.status = 1 and payment.code= :code) ", nativeQuery=true)
+    Optional<Payment> findOneByCode(@Param("userId") Long userId, @Param("storeId")  Long storeId,@Param("code")  String code);
+    Iterable<Payment> findAllByUserId(Long userId);
 }
