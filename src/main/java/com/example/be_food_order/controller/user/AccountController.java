@@ -42,7 +42,7 @@ public class AccountController {
         encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
         if(!checkUser.isPresent()){
-            Role role = roleService.findByName("BUYER");
+            Role role = roleService.findByName("USER");
             user.setRoles(new HashSet<>());
             user.getRoles().add(role);
             return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
