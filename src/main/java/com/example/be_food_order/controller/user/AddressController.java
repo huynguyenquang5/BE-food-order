@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("users/address")
+@RequestMapping("/address")
 public class AddressController {
     @Autowired
     private AddressService addressService;
