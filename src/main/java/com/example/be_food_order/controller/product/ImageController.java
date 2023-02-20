@@ -1,5 +1,6 @@
 package com.example.be_food_order.controller.product;
 
+import com.example.be_food_order.model.message.Message;
 import com.example.be_food_order.model.product.Image;
 import com.example.be_food_order.model.product.Product;
 import com.example.be_food_order.model.product.ProductMethod;
@@ -76,17 +77,17 @@ public class ImageController {
     }
 
     @DeleteMapping("/delete/product/{id}")
-    public ResponseEntity<String> deleteAllByImage(@PathVariable Long id){
+    public ResponseEntity<Message> deleteAllByImage(@PathVariable Long id){
         Optional<Product> product = productService.findOneById(id);
         if(product.isPresent()) {
             boolean checkImg = imageService.deleteAllByProduct(product.get());
             if (checkImg){
-                return new ResponseEntity<>("done",HttpStatus.OK);
+                return new ResponseEntity<>(new Message("done"),HttpStatus.OK);
             }else{
-                return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
             }
         }else{
-            return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
         }
     }
     @GetMapping("/category/{id}")
