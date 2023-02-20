@@ -17,8 +17,6 @@ public class Address {
     private Long id;
     @NotNull
     private String name;
-    @NotNull
-    private Integer status;
     @ManyToOne
     private User user;
 }

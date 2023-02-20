@@ -10,14 +10,24 @@ public class JwtResponse {
     private String type = "Bearer";
     private String username;
     private String name;
+    private Integer status;
     private Collection<? extends GrantedAuthority> roles;
 
-    public JwtResponse(String accessToken, Long id, String username, String name, Collection<? extends GrantedAuthority> roles) {
+    public JwtResponse(String accessToken, Long id, String username, String name, Collection<? extends GrantedAuthority> roles, Integer status) {
         this.token = accessToken;
         this.username = username;
         this.roles = roles;
         this.name = name;
         this.id = id;
+        this.status =status;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getName() {

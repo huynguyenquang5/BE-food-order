@@ -4,26 +4,17 @@ import com.example.be_food_order.model.message.Message;
 import com.example.be_food_order.model.user.Address;
 import com.example.be_food_order.model.user.Role;
 import com.example.be_food_order.model.user.User;
-import com.example.be_food_order.sercurity.jwt.JwtResponse;
 import com.example.be_food_order.sercurity.jwt.JwtService;
 import com.example.be_food_order.service.user.RoleService;
 import com.example.be_food_order.service.user.UserService;
-import org.jetbrains.annotations.ApiStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
+
 
 @RestController
 @RequestMapping("/users")

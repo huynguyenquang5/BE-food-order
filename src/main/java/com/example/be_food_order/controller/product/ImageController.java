@@ -89,4 +89,12 @@ public class ImageController {
             return new ResponseEntity<>("error",HttpStatus.NOT_FOUND);
         }
     }
-}
+    @GetMapping("/category/{id}")
+    public ResponseEntity<Iterable<Image>> findAllByCategoryId(@PathVariable Long id){
+        return new ResponseEntity<>(imageService.findAllByCategoryId(id), HttpStatus.OK);
+    }
+    @GetMapping("/product_name/{name}")
+    public ResponseEntity<Iterable<Image>> findAllByProductName(@PathVariable String name){
+        return new ResponseEntity<>(imageService.findAllByProductName(name), HttpStatus.OK);
+
+}}
