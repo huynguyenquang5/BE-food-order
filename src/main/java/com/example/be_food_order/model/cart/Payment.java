@@ -28,6 +28,8 @@ public class Payment {
     private LocalDate date;
     @NotNull
     private double price;
+    @NotNull
+    private String code;
     @ManyToOne
     private Delivery delivery;
     @ManyToOne

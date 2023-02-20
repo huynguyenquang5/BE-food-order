@@ -1,6 +1,7 @@
 package com.example.be_food_order.controller.cart;
 
 import com.example.be_food_order.model.cart.Cart;
+import com.example.be_food_order.model.cart.Payment;
 import com.example.be_food_order.model.message.Message;
 import com.example.be_food_order.service.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +81,9 @@ public class CartController {
         }else {
             return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
         }
+    }
+    @GetMapping("/payment-order/user/{userId}")
+    public ResponseEntity<Iterable<Payment>> findAllPaymentByUser(@PathVariable("userId") Long userId){
+        return new ResponseEntity<Iterable<Payment>>(cartService.findAllPaymentByUser(userId),HttpStatus.OK);
     }
 }

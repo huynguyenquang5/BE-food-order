@@ -7,7 +7,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IAddressRepository extends JpaRepository<Address, Long> {
+public interface IAddressRepository extends JpaRepository<Address,Long> {
+    Iterable<Address> findAllByUserId(Long userId);
+
     @Query(value = "select * from Address where user_id = :userId", nativeQuery = true)
-    Iterable<Address> findAllByUserId(@Param("userId") Long userId);
+    Iterable<Address> findAllAddressByUserId(@Param("userId") Long userId);
 }
