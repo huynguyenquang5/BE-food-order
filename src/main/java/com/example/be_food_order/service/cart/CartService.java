@@ -209,4 +209,12 @@ public class CartService {
             }
         }
     }
+    public Iterable<Payment> findAllPaymentByStore(Long storeId){
+        Optional<Store> store = storeService.findOneById(storeId);
+        if  (store.isPresent()) {
+            return paymentRepository.findAllPaymentByStore(store.get().getId());
+        }else {
+            return null;
+        }
+    }
 }

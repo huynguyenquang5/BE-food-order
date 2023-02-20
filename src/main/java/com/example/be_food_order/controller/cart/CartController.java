@@ -108,4 +108,13 @@ public class CartController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/payment-list/store/{storeId}")
+    public ResponseEntity<Iterable<Payment>> findAllPaymentByStore(@PathVariable("storeId") Long storeId){
+        Iterable<Payment> Payments = cartService.findAllPaymentByStore(storeId);
+        if(null != Payments){
+            return new ResponseEntity<>(Payments,HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
