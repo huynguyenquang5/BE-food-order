@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -47,17 +48,19 @@ public class CartService {
 
     public boolean save(Cart cart) {
         Optional<Product> product = productService.findOneById(cart.getProduct().getId());
-        Optional<Payment> payment = paymentRepository.findOne(cart.getUser().getId(), product.get().getStore().getId());
-        if (!payment.isPresent()) {
+        if (product.isPresent()) {
+            Optional<Payment> payment = paymentRepository.findOne(cart.getUser().getId(), product.get().getStore().getId());
             Optional<Cart> cartCheck = cartRepository.findOne(cart.getUser().getId(), cart.getProduct().getId());
-            if (cartCheck.isPresent()) {
+            if (cartCheck.isPresent() && !payment.isPresent()) {
                 cartCheck.get().setQuantity(cartCheck.get().getQuantity() + 1);
                 cartCheck.get().setPrice(cartCheck.get().getProduct().getProductMethod().getPrice() * cartCheck.get().getQuantity());
                 cartRepository.save(cartCheck.get());
                 return true;
-            } else {
+            } else if(!Objects.equals(product.get().getStore().getUser().getId(), cart.getUser().getId())){
                 cartRepository.save(cart);
                 return true;
+            }else {
+                return false;
             }
         } else {
             return false;
@@ -181,4 +184,3 @@ public class CartService {
         return code.toString();
     }
 }
-
