@@ -53,13 +53,12 @@ public class UserController {
         user.setId(userOptional.get().getId());
         return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
     }
-//    @GetMapping("/name/{username}")
-//    public ResponseEntity<User> findUserByName(@PathVariable String username){
-//        if (!userService.findByUsername(username).isPresent()){
-//            return new ResponseEntity<>(userService.findByUsername(username).get(), HttpStatus.OK);
-//        }else{
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @GetMapping("/username/{username}")
+    public ResponseEntity<User> findUserByName(@PathVariable String username){
+        if (userService.findByUsername(username).isPresent()){return new ResponseEntity<>(userService.findByUsername(username).get(), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
 }
