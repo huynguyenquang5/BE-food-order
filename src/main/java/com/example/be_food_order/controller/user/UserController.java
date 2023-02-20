@@ -68,4 +68,12 @@ public class UserController {
         userService.deleteAddressById(id);
         return new ResponseEntity<>(new Message("done"), HttpStatus.OK);
     }
+    @GetMapping("/username/{username}")
+    public ResponseEntity<User> findUserByName(@PathVariable String username){
+        if (userService.findByUsername(username).isPresent()){return new ResponseEntity<>(userService.findByUsername(username).get(), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

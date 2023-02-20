@@ -12,6 +12,7 @@ import com.example.be_food_order.repository.cart.ICartRepository;
 import com.example.be_food_order.repository.cart.IDeliveryRepository;
 import com.example.be_food_order.repository.cart.IInvoiceRepository;
 import com.example.be_food_order.repository.cart.IPaymentRepository;
+import com.example.be_food_order.repository.product.IProductRepository;
 import com.example.be_food_order.repository.user.IAddressRepository;
 import com.example.be_food_order.service.product.ProductService;
 import com.example.be_food_order.service.store.StoreService;
@@ -45,6 +46,8 @@ public class CartService {
     private UserService userService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private IProductRepository iProductRepository;
 
     public boolean save(Cart cart) {
         Optional<Product> product = productService.findOneById(cart.getProduct().getId());
@@ -119,7 +122,7 @@ public class CartService {
         if (store.isPresent() && user.isPresent() && address.isPresent()) {
             try {
                 double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
-                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price, code, null, address.get(), 1));
+                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price+10, code, null, address.get(), 1));
                 Optional<Payment> payment = paymentRepository.findOneByCode(user.get().getId(), store.get().getId(), code);
                 if (payment.isPresent()) {
                     Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
@@ -146,6 +149,7 @@ public class CartService {
                     Delivery delivery = deliveryRepository.findAll().get(0);
                     payment.get().setDelivery(delivery);
                     payment.get().setStatus(2);
+                    changeQuantityProduct(payment.get().getId());
                     deleteAllCart(payment.get().getUser().getId(), payment.get().getStore().getId());
                     break;
                 case "success":
@@ -182,5 +186,35 @@ public class CartService {
             code.append(ThreadLocalRandom.current().nextInt(0, 10));
         }
         return code.toString();
+    }
+    public  Optional<Payment> findPaymentById(Long id){
+       return paymentRepository.findById(id);
+    }
+    public Iterable<Invoice> findAllByPayment(Long paymentId){
+        Optional<Payment> payment = paymentRepository.findById(paymentId);
+        if  (payment.isPresent()) {
+            return invoiceRepository.findAllByPaymentId(payment.get().getId());
+        }else {
+            return null;
+        }
+    }
+
+    private void changeQuantityProduct(Long paymentId){
+        Iterable<Invoice> invoices = invoiceRepository.findAllByPaymentId(paymentId);
+        for (Invoice inv : invoices) {
+            Optional<Product> product = productService.findOneById(inv.getProduct().getId());
+            if (product.isPresent()) {
+                product.get().getProductMethod().setQuantity(product.get().getProductMethod().getQuantity() + inv.getQuantity());
+                productService.save(product.get());
+            }
+        }
+    }
+    public Iterable<Payment> findAllPaymentByStore(Long storeId){
+        Optional<Store> store = storeService.findOneById(storeId);
+        if  (store.isPresent()) {
+            return paymentRepository.findAllPaymentByStore(store.get().getId());
+        }else {
+            return null;
+        }
     }
 }
