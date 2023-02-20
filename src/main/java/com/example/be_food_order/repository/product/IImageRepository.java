@@ -31,7 +31,7 @@ public interface IImageRepository extends JpaRepository<Image, Long> {
 
     Iterable<Image> findAllByProductNameContains(String name);
 
-    @Query(value = "select i.id, i.name, i.product_id from image i join  product p on i.product_id = p.id join product_method pm on p.product_method_id = pm.id order by pm.quantity desc", nativeQuery = true)
+    @Query(value = "select i.id, i.name, i.product_id from image i join  product p on i.product_id = p.id join product_method pm on p.product_method_id = pm.id  group by i.product_id order by pm.quantity desc", nativeQuery = true)
     Iterable<Image> findAllTopFood();
 
 
