@@ -74,5 +74,8 @@ public class ImageService implements ICRUDService<Image, Long> {
     public Iterable<Image> findAllByProductName(String name){
         return imageRepository.findAllByProductNameContains(name);
     }
+    public Iterable<Image> findAllTopFood(){
+        return imageRepository.findAllTopFood();
+    }
 
 }
