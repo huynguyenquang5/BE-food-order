@@ -12,6 +12,7 @@ import com.example.be_food_order.repository.cart.ICartRepository;
 import com.example.be_food_order.repository.cart.IDeliveryRepository;
 import com.example.be_food_order.repository.cart.IInvoiceRepository;
 import com.example.be_food_order.repository.cart.IPaymentRepository;
+import com.example.be_food_order.repository.product.IProductRepository;
 import com.example.be_food_order.repository.user.IAddressRepository;
 import com.example.be_food_order.service.product.ProductService;
 import com.example.be_food_order.service.store.StoreService;
@@ -45,6 +46,8 @@ public class CartService {
     private UserService userService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private IProductRepository iProductRepository;
 
     public boolean save(Cart cart) {
         Optional<Product> product = productService.findOneById(cart.getProduct().getId());
@@ -146,6 +149,7 @@ public class CartService {
                     Delivery delivery = deliveryRepository.findAll().get(0);
                     payment.get().setDelivery(delivery);
                     payment.get().setStatus(2);
+                    changeQuantityProduct(payment.get().getId());
                     deleteAllCart(payment.get().getUser().getId(), payment.get().getStore().getId());
                     break;
                 case "success":
@@ -192,6 +196,17 @@ public class CartService {
             return invoiceRepository.findAllByPaymentId(payment.get().getId());
         }else {
             return null;
+        }
+    }
+
+    private void changeQuantityProduct(Long paymentId){
+        Iterable<Invoice> invoices = invoiceRepository.findAllByPaymentId(paymentId);
+        for (Invoice inv : invoices) {
+            Optional<Product> product = productService.findOneById(inv.getProduct().getId());
+            if (product.isPresent()) {
+                product.get().getProductMethod().setQuantity(product.get().getProductMethod().getQuantity() + inv.getQuantity());
+                productService.save(product.get());
+            }
         }
     }
 }
