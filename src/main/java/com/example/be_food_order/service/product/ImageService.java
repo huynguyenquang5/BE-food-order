@@ -2,6 +2,7 @@ package com.example.be_food_order.service.product;
 
 import com.example.be_food_order.model.product.Image;
 import com.example.be_food_order.model.product.Product;
+import com.example.be_food_order.repository.cart.IDeliveryRepository;
 import com.example.be_food_order.repository.product.IImageRepository;
 import com.example.be_food_order.repository.product.IProductMethodRepository;
 import com.example.be_food_order.repository.product.IProductRepository;
@@ -21,6 +22,9 @@ public class ImageService implements ICRUDService<Image, Long> {
     private IProductRepository productRepository;
     @Autowired
     private IProductMethodRepository productMethodRepository;
+    @Autowired
+    private IDeliveryRepository iDeliveryRepository;
+
     @Override
     public Iterable<Image> findAll() {
         return imageRepository.findAll();
@@ -64,4 +68,11 @@ public class ImageService implements ICRUDService<Image, Long> {
             return false;
         }
     }
+    public Iterable<Image> findAllByCategoryId(Long id){
+        return imageRepository.findAllByCategoryId(id);
+    }
+    public Iterable<Image> findAllByProductName(String name){
+        return imageRepository.findAllByProductNameContains(name);
+    }
+
 }

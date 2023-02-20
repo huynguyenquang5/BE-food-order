@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 public interface IImageRepository extends JpaRepository<Image, Long> {
     Iterable<Image> findAllByProductId(Long id);
@@ -20,4 +22,9 @@ public interface IImageRepository extends JpaRepository<Image, Long> {
     @Modifying
     @Query(value="delete from image where image.product_id= :productId", nativeQuery=true)
     void deleteListImageByProduct(@Param("productId") Long productId);
+    @Query(value = "SELECT i.id, i.name, i.product_id FROM Image i  JOIN  product p on i.product_id = p.id JOIN product_method pm on p.product_method_id = pm.id  and pm.category_id = :category_id group by  i.product_id", nativeQuery = true)
+    Iterable<Image> findAllByCategoryId(@Param("category_id") Long id);
+    Iterable<Image> findAllByProductNameContains(String name);
+
+
 }
