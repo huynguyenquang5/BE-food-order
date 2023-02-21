@@ -5,7 +5,6 @@ import com.example.be_food_order.model.cart.Invoice;
 import com.example.be_food_order.model.cart.Payment;
 import com.example.be_food_order.model.message.Message;
 import com.example.be_food_order.service.cart.CartService;
-import jdk.nashorn.internal.runtime.regexp.joni.encoding.ObjPtr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
