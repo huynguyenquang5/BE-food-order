@@ -21,6 +21,7 @@ public class AdminService {
     public void addRoleMerchant(Long id) {
         if (userService.findOneById(id).isPresent()) {
             userService.findOneById(id).get().setStatus(1);
+            userService.findOneById(id).get().getRoles().remove(roleService.findByName("USER"));
             userService.findOneById(id).get().getRoles().add(roleService.findByName("MERCHANT"));
         }
     }
@@ -28,7 +29,8 @@ public class AdminService {
     public void addRoleMerchantPartner(Long id) {
         if (userService.findOneById(id).isPresent()) {
             userService.findOneById(id).get().setStatus(1);
-            userService.findOneById(id).get().getRoles().add(roleService.findByName("MERCHANT_PARTNER"));
+            userService.findOneById(id).get().getRoles().remove(roleService.findByName("MERCHANT"));
+            userService.findOneById(id).get().getRoles().add(roleService.findByName("PARTNER"));
         }
     }
 }

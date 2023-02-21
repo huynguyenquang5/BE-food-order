@@ -100,4 +100,8 @@ public class JwtResponse {
     public Double getWallet() {
         return wallet;
     }
+
+
+
+
 }
