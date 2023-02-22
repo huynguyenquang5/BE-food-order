@@ -50,8 +50,8 @@ public interface IPaymentRepository extends JpaRepository<Payment, Long> {
     @Query(value = "select p.id, p.date, p.price, p.status, p.delivery_id, p.store_id, p.user_id, p.address_id, p.code \n" +
             "from\n" +
             " store s join payment p on s.id =  p.store_id join user u on p.user_id = u.id \n" +
-            "where (s.id= :storeId and p.code like %:code%) and p.status= :status", nativeQuery = true)
-    Iterable<Payment> findAllPaymentByStoreAndBuyerAndStatus(@Param("storeId") Long storeId, @Param("code") String code, @Param("status") Long status);
+            "where (s.id= :storeId and u.name like %:code%) and p.status= :status", nativeQuery = true)
+    Iterable<Payment> findAllPaymentByStoreAndBuyerAndStatus(@Param("storeId") Long storeId, @Param("name") String name, @Param("status") Long status);
 
     //done
     @Query(value = "select p.id, p.date, p.price, p.status, p.delivery_id, p.store_id, p.user_id, p.address_id, p.code \n" +
