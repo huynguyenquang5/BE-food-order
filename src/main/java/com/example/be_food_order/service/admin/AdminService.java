@@ -62,6 +62,13 @@ public class AdminService {
         }
     }
 
+    public void removeRolePartner(Long id) {
+        if (userService.findOneById(id).isPresent()) {
+            userService.findOneById(id).get().getRoles().remove(roleService.findByName("PARTNER"));
+            userService.findOneById(id).get().getRoles().add(roleService.findByName("MERCHANT"));
+        }
+    }
+
     public void deleteStoreByUserId(Long id, Integer status) {
         Optional<Store> store = storeRepository.findStoreByUserId(id);
         if (store.isPresent()) {

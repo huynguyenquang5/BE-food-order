@@ -28,6 +28,14 @@ public class AdminController {
     public ResponseEntity<Iterable<User>> findAllUser() {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> findOneUser(@PathVariable Long id) {
+        Optional<User> user = userService.findOneById(id);
+        if (!user.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(user.get(), HttpStatus.OK);
+    }
 
     @PutMapping("/users/id={id}&status={status}")
     public ResponseEntity<User> activeBlockUser(@PathVariable Long id, @PathVariable Integer status) {
