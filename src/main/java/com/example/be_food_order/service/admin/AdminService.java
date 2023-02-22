@@ -11,7 +11,6 @@ import com.example.be_food_order.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -33,9 +32,17 @@ public class AdminService {
         if (userService.findOneById(id).isPresent()) {
             userService.findOneById(id).get().setStatus(status);
         }
-        if (status == 0 && storeRepository.findStoreByUserId(id).isPresent()) {
-            deleteAllProductByStoreId(storeRepository.findStoreByUserId(id).get().getId());
-            deleteStoreByUserId(id);
+        if (storeRepository.findStoreByUserId(id).isPresent()) {
+            switch (status) {
+                case 0:
+                    deleteAllProductByStoreId(storeRepository.findStoreByUserId(id).get().getId(), 0);
+                    deleteStoreByUserId(id, 0);
+                    break;
+                case 1:
+                    deleteAllProductByStoreId(storeRepository.findStoreByUserId(id).get().getId(), 1);
+                    deleteStoreByUserId(id, 1);
+                    break;
+            }
         }
     }
 
@@ -55,16 +62,16 @@ public class AdminService {
         }
     }
 
-    public void deleteStoreByUserId(Long id) {
+    public void deleteStoreByUserId(Long id, Integer status) {
         Optional<Store> store = storeRepository.findStoreByUserId(id);
         if (store.isPresent()) {
-            store.get().setStatus(0);
+            store.get().setStatus(status);
         }
     }
 
-    public void deleteAllProductByStoreId(Long id) {
+    public void deleteAllProductByStoreId(Long id, Integer status) {
         for (Product product : productRepository.findAllByStoreId(id)) {
-            product.setStatus(0);
+            product.setStatus(status);
         }
     }
 }
