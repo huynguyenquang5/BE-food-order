@@ -57,10 +57,7 @@ public class AccountController {
         String jwt = jwtService.generateTokenLogin(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User currentUser = userService.findByUsername(user.getUsername()).get();
-        return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(),
-                userDetails.getUsername(), currentUser.getUsername(),
-                userDetails.getAuthorities(),currentUser.getStatus(),
-                currentUser.getEmail(), currentUser.getPhone()));
+        return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), currentUser.getUsername(), userDetails.getAuthorities(),currentUser.getStatus(),currentUser.getEmail(), currentUser.getPhone(), currentUser.getWallet()));
     }
 
 }

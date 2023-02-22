@@ -11,11 +11,13 @@ public class JwtResponse {
     private String username;
     private String name;
     private Integer status;
+    private Collection<? extends GrantedAuthority> roles;
     private String email;
     private String phone;
-    private Collection<? extends GrantedAuthority> roles;
+    private Double wallet;
 
-    public JwtResponse(String accessToken, Long id, String username, String name, Collection<? extends GrantedAuthority> roles, Integer status, String email, String phone) {
+
+    public JwtResponse(String accessToken, Long id, String username, String name, Collection<? extends GrantedAuthority> roles, Integer status, String email, String phone, Double wallet) {
         this.token = accessToken;
         this.username = username;
         this.roles = roles;
@@ -24,14 +26,7 @@ public class JwtResponse {
         this.status = status;
         this.email = email;
         this.phone = phone;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+        this.wallet = wallet;
     }
 
     public String getEmail() {
@@ -48,6 +43,14 @@ public class JwtResponse {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getName() {
@@ -93,4 +96,12 @@ public class JwtResponse {
     public Collection<? extends GrantedAuthority> getRoles() {
         return roles;
     }
+
+    public Double getWallet() {
+        return wallet;
+    }
+
+
+
+
 }

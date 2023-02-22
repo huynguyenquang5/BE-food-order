@@ -305,4 +305,7 @@ public class CartService {
             return paymentRepository.findAllPaymentByStoreAndPhoneAndStatus(storeId,filter.getPhone(),filter.getStatus());
         }
     }
+    public Iterable<Invoice> findAllInvoiceByProductId(Long id){
+        return invoiceRepository.findAllByProductId(id);
+    }
 }

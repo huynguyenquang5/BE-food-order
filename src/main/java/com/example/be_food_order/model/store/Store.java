@@ -31,6 +31,8 @@ public class Store {
     private String description;
     @NotNull
     private Double wallet = 0.0;
+    @NotNull
+    private Integer status = 1;
     @ManyToOne
     private User user;
 }

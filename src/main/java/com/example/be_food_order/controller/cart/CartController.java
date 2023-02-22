@@ -140,4 +140,8 @@ public class CartController {
             return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/invoice-list/product/{id}")
+    public ResponseEntity<Iterable<Invoice>> findAllInvoiceByProductId(@PathVariable Long id){
+        return new ResponseEntity<>(cartService.findAllInvoiceByProductId(id),HttpStatus.OK);
+    }
 }
