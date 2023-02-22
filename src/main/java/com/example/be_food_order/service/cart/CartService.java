@@ -217,4 +217,7 @@ public class CartService {
             return null;
         }
     }
+    public Iterable<Invoice> findAllInvoiceByProductId(Long id){
+        return invoiceRepository.findAllByProductId(id);
+    }
 }
