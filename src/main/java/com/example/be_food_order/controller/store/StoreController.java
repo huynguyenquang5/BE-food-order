@@ -34,6 +34,10 @@ public class StoreController {
         }
         return new ResponseEntity<>(store.get(), HttpStatus.OK);
     }
+    @PostMapping
+    public ResponseEntity<Store> createStore(@RequestBody Store store) {
+        return new ResponseEntity<>(storeService.save(store), HttpStatus.CREATED);
+    }
     @PutMapping("user/{id}")
     public ResponseEntity<Store> updateStore(@PathVariable Long id, @RequestBody Store store) {
         Optional<Store> storeOptional = storeService.findStoreByUserId(id);
