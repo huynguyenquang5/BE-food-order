@@ -86,17 +86,14 @@ public class ImageController {
     }
 
     @DeleteMapping("/delete/product/{id}")
-    public ResponseEntity<Message> deleteAllByImage(@PathVariable Long id){
+    public ResponseEntity<Message> deleteAllByImage(@PathVariable Long id) {
         Optional<Product> product = productService.findOneById(id);
-        if(product.isPresent()) {
-            boolean checkImg = imageService.deleteAllByProduct(product.get());
-            if (checkImg){
-                return new ResponseEntity<>(new Message("done"),HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
-            }
-        }else{
-            return new ResponseEntity<>(new Message("error"),HttpStatus.NOT_FOUND);
+        if (product.isPresent()) {
+            product.get().setStatus(0);
+            productService.save(product.get());
+            return new ResponseEntity<>(new Message("done"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -111,7 +108,7 @@ public class ImageController {
     }
 
     @GetMapping("/top-food")
-    public ResponseEntity<Iterable<Image>> findAllTopFood(){
+    public ResponseEntity<Iterable<Image>> findAllTopFood() {
         return new ResponseEntity<>(imageService.findAllTopFood(), HttpStatus.OK);
     }
 }
