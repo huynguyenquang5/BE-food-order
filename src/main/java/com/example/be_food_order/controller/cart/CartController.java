@@ -130,9 +130,15 @@ public class CartController {
         }
     }
 
-    @PostMapping("/filter/payment-list/store/{storeId}")
+    @PostMapping("/filter/payment-list/store/{storeId}/{filterType}")
     public ResponseEntity<Iterable<Payment>> filterPayment(@PathVariable("storeId") Long storeId,
+                                                           @PathVariable("filterType") String filterType,
                                                            @RequestBody Filter filter) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        Iterable<Payment> payments =cartService.filterPaymentByStore(storeId, filter,filterType);
+        if(null != payments) {
+            return new ResponseEntity<>(payments, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
+        }
     }
 }
