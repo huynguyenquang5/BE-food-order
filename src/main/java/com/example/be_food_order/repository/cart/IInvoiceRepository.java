@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IInvoiceRepository extends JpaRepository<Invoice,Long> {
     Iterable<Invoice> findAllByPaymentId(Long id);
+    Iterable<Invoice> findAllByProductId(Long id);
 }

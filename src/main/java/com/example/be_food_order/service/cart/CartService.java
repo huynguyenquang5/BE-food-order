@@ -145,30 +145,42 @@ public class CartService {
 
     public boolean actionPayment(Long paymentId, String status) {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
-        if (payment.isPresent()) {
-            switch (status) {
-                case "approves":
-                    Delivery delivery = deliveryRepository.findAll().get(0);
-                    payment.get().setDelivery(delivery);
-                    payment.get().setStatus(2);
-                    changeQuantityProduct(payment.get().getId());
-                    deleteAllCart(payment.get().getUser().getId(), payment.get().getStore().getId());
-                    break;
-                case "success":
-                    payment.get().setStatus(3);
-                    break;
-                case "cancel":
-                    if (payment.get().getStatus() == 1) {
-                        payment.get().setStatus(0);
-                    } else {
-                        return false;
+        try {
+            if (payment.isPresent()) {
+                Optional<User> user = userService.findOneById(payment.get().getUser().getId());
+                Optional<Store> store = storeService.findOneById(payment.get().getStore().getId());
+                if (user.isPresent() && store.isPresent()) {
+                    switch (status) {
+                        case "approves":
+                            Delivery delivery = deliveryRepository.findAll().get(0);
+                            payment.get().setDelivery(delivery);
+                            payment.get().setStatus(2);
+                            user.get().setWallet(user.get().getWallet() - payment.get().getPrice() - 10);
+                            store.get().setWallet(store.get().getWallet() + (payment.get().getPrice() * 80 / 100));
+                            changeQuantityProduct(payment.get().getId());
+                            deleteAllCart(payment.get().getUser().getId(), payment.get().getStore().getId());
+                            break;
+                        case "success":
+                            payment.get().setStatus(3);
+                            break;
+                        case "cancel":
+                            if (payment.get().getStatus() == 1) {
+                                payment.get().setStatus(0);
+                            } else {
+                                return false;
+                            }
+                            break;
+                        default:
+                            payment.get().setStatus(0);
                     }
-                    break;
-                default:
-                    payment.get().setStatus(0);
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
             }
-            return true;
-        } else {
+        }catch (Exception e) {
             return false;
         }
     }
@@ -292,5 +304,8 @@ public class CartService {
         }else {
             return paymentRepository.findAllPaymentByStoreAndPhoneAndStatus(storeId,filter.getPhone(),filter.getStatus());
         }
+    }
+    public Iterable<Invoice> findAllInvoiceByProductId(Long id){
+        return invoiceRepository.findAllByProductId(id);
     }
 }
