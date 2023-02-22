@@ -19,7 +19,7 @@ public class Product {
     @NotNull
     private String name;
     @NotNull
-    private Integer status;
+    private Integer status = 1;
     @ManyToOne
     private ProductMethod productMethod;
     @ManyToOne
