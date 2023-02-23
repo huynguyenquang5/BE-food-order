@@ -308,4 +308,7 @@ public class CartService {
     public Iterable<Invoice> findAllInvoiceByProductId(Long id){
         return invoiceRepository.findAllByProductId(id);
     }
+    public Iterable<Invoice> findAllInvoiceByProductName(String name){
+        return invoiceRepository.findAllByProductNameContaining(name);
+    }
 }
