@@ -62,11 +62,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**/**").permitAll()
                 .antMatchers("/**/**/**").permitAll()
                 .antMatchers("/**/**/**/**").permitAll()
-                .antMatchers("/users/login").permitAll()
+                .antMatchers("/accounts/login").permitAll()
+                .antMatchers("/accounts/register").permitAll()
                 .antMatchers("/users/username/**").permitAll()
-
 //                .antMatchers("/users**").hasRole("ADMIN")
-//                .antMatchers("/users/update").hasAnyRole("BUYER", "SELLER")
+//                .antMatchers("/users/update").hasAnyRole("USER", "MERCHANT")
                 .anyRequest().authenticated()
                 .and().csrf().disable();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
