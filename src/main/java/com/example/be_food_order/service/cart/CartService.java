@@ -123,8 +123,8 @@ public class CartService {
         String code = codePayment();
         if (store.isPresent() && user.isPresent() && address.isPresent()) {
             try {
-                Double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
-                if (null != price && price <= user.get().getWallet()) {
+                double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
+                if (price <= user.get().getWallet()) {
                     paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price + 10, code, null, address.get(), 1));
                     Optional<Payment> payment = paymentRepository.findOneByCode(user.get().getId(), store.get().getId(), code);
                     if (payment.isPresent()) {
