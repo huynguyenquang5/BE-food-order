@@ -123,17 +123,25 @@ public class CartService {
         String code = codePayment();
         if (store.isPresent() && user.isPresent() && address.isPresent()) {
             try {
-                double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
-                paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price + 10, code, null, address.get(), 1));
-                Optional<Payment> payment = paymentRepository.findOneByCode(user.get().getId(), store.get().getId(), code);
-                if (payment.isPresent()) {
-                    Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
-                    for (Cart cart : listCarts) {
-                        invoiceRepository.save(new Invoice(0L, cart.getQuantity(), cart.getProduct(), payment.get()));
+                Double price = cartRepository.totalPriceByPayment(user.get().getId(), store.get().getId());
+                if (null != price && price <= user.get().getWallet()) {
+                    paymentRepository.save(new Payment(0L, user.get(), store.get(), LocalDate.now(), price + 10, code, null, address.get(), 1));
+                    Optional<Payment> payment = paymentRepository.findOneByCode(user.get().getId(), store.get().getId(), code);
+                    if (payment.isPresent()) {
+                        Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
+                        for (Cart cart : listCarts) {
+                            if  (cart.getProduct().getStatus()!= 1 && cart.getProduct().getStore().getStatus()!= 1) {
+                                throw new Exception();
+                            }else {
+                                invoiceRepository.save(new Invoice(0L, cart.getQuantity(), cart.getProduct(), payment.get()));
+                            }
+                        }
+                        return true;
+                    } else {
+                        throw new Exception();
                     }
-                    return true;
                 } else {
-                    return false;
+                    throw new Exception();
                 }
             } catch (Exception e) {
                 return false;
@@ -180,7 +188,7 @@ public class CartService {
             } else {
                 return false;
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -234,6 +242,7 @@ public class CartService {
             return null;
         }
     }
+
     @Transactional
     public Iterable<Payment> filterPaymentByStore(Long storeId, Filter filter, String filterType) {
         try {
@@ -241,71 +250,91 @@ public class CartService {
             if (store.isPresent()) {
                 Iterable<Payment> payments;
                 switch (filterType) {
-                    case "code": payments = findAllPaymentByCode(storeId,filter);break;
-                    case "day":payments = findAllPaymentByDay(storeId,filter);break;
-                    case "month":payments = findAllPaymentByMonth(storeId,filter);break;
-                    case "price":payments = findAllPaymentByPrice(storeId,filter);break;
-                    case "buyer":payments = findAllPaymentByBuyer(storeId,filter);break;
-                    case "phone":payments = findAllPaymentByPhone(storeId,filter);break;
-                    default:if(null == filter.getStatus() || 99 == filter.getStatus()){
-                        payments = paymentRepository.findAllPaymentByStore(storeId);
-                    }else {
-                        payments = paymentRepository.findAllPaymentByStoreAndStatus(storeId,filter.getStatus());
-                    }
+                    case "code":
+                        payments = findAllPaymentByCode(storeId, filter);
+                        break;
+                    case "day":
+                        payments = findAllPaymentByDay(storeId, filter);
+                        break;
+                    case "month":
+                        payments = findAllPaymentByMonth(storeId, filter);
+                        break;
+                    case "price":
+                        payments = findAllPaymentByPrice(storeId, filter);
+                        break;
+                    case "buyer":
+                        payments = findAllPaymentByBuyer(storeId, filter);
+                        break;
+                    case "phone":
+                        payments = findAllPaymentByPhone(storeId, filter);
+                        break;
+                    default:
+                        if (null == filter.getStatus() || 99 == filter.getStatus()) {
+                            payments = paymentRepository.findAllPaymentByStore(storeId);
+                        } else {
+                            payments = paymentRepository.findAllPaymentByStoreAndStatus(storeId, filter.getStatus());
+                        }
                 }
                 return payments;
-            }else {
+            } else {
                 return null;
             }
         } catch (Exception e) {
             return null;
         }
     }
-    private Iterable<Payment> findAllPaymentByCode(Long storeId,Filter filter){
+
+    private Iterable<Payment> findAllPaymentByCode(Long storeId, Filter filter) {
         if (null == filter.getStatus() || 99 == filter.getStatus()) {
-            return paymentRepository.findAllPaymentByStoreAndCode(storeId,filter.getCode());
-        }else {
-            return paymentRepository.findAllPaymentByStoreAndCodeAndStatus(storeId,filter.getCode(),filter.getStatus());
+            return paymentRepository.findAllPaymentByStoreAndCode(storeId, filter.getCode());
+        } else {
+            return paymentRepository.findAllPaymentByStoreAndCodeAndStatus(storeId, filter.getCode(), filter.getStatus());
         }
     }
-    private Iterable<Payment> findAllPaymentByDay(Long storeId,Filter filter){
+
+    private Iterable<Payment> findAllPaymentByDay(Long storeId, Filter filter) {
         if (null == filter.getStatus() || 99 == filter.getStatus()) {
             return paymentRepository.findAllPaymentByStoreAndDay(storeId, filter.getDay());
-        }else {
-            return paymentRepository.findAllPaymentByStoreAndDayAndStatus(storeId,filter.getStatus(),filter.getDay());
+        } else {
+            return paymentRepository.findAllPaymentByStoreAndDayAndStatus(storeId, filter.getStatus(), filter.getDay());
         }
     }
-    private Iterable<Payment> findAllPaymentByMonth(Long storeId,Filter filter){
+
+    private Iterable<Payment> findAllPaymentByMonth(Long storeId, Filter filter) {
         String[] list = filter.getMonth().split("-");
         if (null == filter.getStatus() || 99 == filter.getStatus()) {
-            return paymentRepository.findAllPaymentByStoreAndMonth(storeId,list[1],list[0]);
-        }else {
-            return paymentRepository.findAllPaymentByStoreAndMonthAndStatus(storeId,filter.getStatus(),list[1],list[0]);
+            return paymentRepository.findAllPaymentByStoreAndMonth(storeId, list[1], list[0]);
+        } else {
+            return paymentRepository.findAllPaymentByStoreAndMonthAndStatus(storeId, filter.getStatus(), list[1], list[0]);
         }
     }
-    private Iterable<Payment> findAllPaymentByPrice(Long storeId,Filter filter){
+
+    private Iterable<Payment> findAllPaymentByPrice(Long storeId, Filter filter) {
         String[] list = filter.getPrice().split(",");
         if (null == filter.getStatus() || 99 == filter.getStatus()) {
-            return paymentRepository.findAllPaymentByStoreAndPrice(storeId,Double.parseDouble(list[0]),Double.parseDouble(list[1]));
-        }else {
-            return paymentRepository.findAllPaymentByStoreAndPriceAndStatus(storeId,filter.getStatus(),Double.parseDouble(list[0]),Double.parseDouble(list[1]));
+            return paymentRepository.findAllPaymentByStoreAndPrice(storeId, Double.parseDouble(list[0]), Double.parseDouble(list[1]));
+        } else {
+            return paymentRepository.findAllPaymentByStoreAndPriceAndStatus(storeId, filter.getStatus(), Double.parseDouble(list[0]), Double.parseDouble(list[1]));
         }
     }
-    private Iterable<Payment> findAllPaymentByBuyer(Long storeId,Filter filter){
+
+    private Iterable<Payment> findAllPaymentByBuyer(Long storeId, Filter filter) {
         if (null == filter.getStatus() || 99 == filter.getStatus()) {
-            return paymentRepository.findAllPaymentByStoreAndBuyer(storeId,filter.getBuyer());
-        }else {
-            return paymentRepository.findAllPaymentByStoreAndBuyerAndStatus(storeId,filter.getBuyer(),filter.getStatus());
+            return paymentRepository.findAllPaymentByStoreAndBuyer(storeId, filter.getBuyer());
+        } else {
+            return paymentRepository.findAllPaymentByStoreAndBuyerAndStatus(storeId, filter.getBuyer(), filter.getStatus());
         }
     }
-    private Iterable<Payment> findAllPaymentByPhone(Long storeId,Filter filter){
+
+    private Iterable<Payment> findAllPaymentByPhone(Long storeId, Filter filter) {
         if (null == filter.getStatus() || 99 == filter.getStatus()) {
-            return paymentRepository.findAllPaymentByStoreAndPhone(storeId,filter.getPhone());
-        }else {
-            return paymentRepository.findAllPaymentByStoreAndPhoneAndStatus(storeId,filter.getPhone(),filter.getStatus());
+            return paymentRepository.findAllPaymentByStoreAndPhone(storeId, filter.getPhone());
+        } else {
+            return paymentRepository.findAllPaymentByStoreAndPhoneAndStatus(storeId, filter.getPhone(), filter.getStatus());
         }
     }
-    public Iterable<Invoice> findAllInvoiceByProductId(Long id){
+
+    public Iterable<Invoice> findAllInvoiceByProductId(Long id) {
         return invoiceRepository.findAllByProductId(id);
     }
 }
