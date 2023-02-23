@@ -75,5 +75,24 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @PutMapping("/change/{id}")
+    public ResponseEntity<User> changePassword(@RequestBody User user, @PathVariable Long id){
+        Optional<User> userChange = userService.findOneById(id);
+        if (userChange.isPresent()){
+            user.setId(userChange.get().getId());
+            user.setName(userChange.get().getName());
+            user.setUsername(userChange.get().getUsername());
+            user.setPhone(userChange.get().getPhone());
+            user.setStatus(userChange.get().getStatus());
+            user.setWallet(userChange.get().getWallet());
+            user.setConfirmPassword(userChange.get().getConfirmPassword());
+            user.setEmail(userChange.get().getEmail());
+            user.setRoles(userChange.get().getRoles());
+            String encodePassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodePassword);
+            return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
 }
