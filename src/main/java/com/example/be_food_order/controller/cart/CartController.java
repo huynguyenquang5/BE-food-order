@@ -79,7 +79,7 @@ public class CartController {
         if (cartService.actionPayment(id, status)) {
             return new ResponseEntity<>(new Message("success"), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("error"), HttpStatus.OK);
         }
     }
 
@@ -90,7 +90,7 @@ public class CartController {
         if (cartService.paymentCart(storeId, userId, addressId)) {
             return new ResponseEntity<>(new Message("success"), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(new Message("error"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("error"), HttpStatus.OK);
         }
     }
 

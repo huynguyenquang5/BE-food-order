@@ -23,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -129,14 +126,19 @@ public class CartService {
                     Optional<Payment> payment = paymentRepository.findOneByCode(user.get().getId(), store.get().getId(), code);
                     if (payment.isPresent()) {
                         Iterable<Cart> listCarts = cartRepository.findALlCartByStoreAndUser(user.get().getId(), store.get().getId());
-                        for (Cart cart : listCarts) {
-                            if  (cart.getProduct().getStatus()!= 1 && cart.getProduct().getStore().getStatus()!= 1) {
-                                throw new Exception();
-                            }else {
-                                invoiceRepository.save(new Invoice(0L, cart.getQuantity(), cart.getProduct(), payment.get()));
+                        List<Cart> list  = (List<Cart>) listCarts;
+                        if (list.size() > 0) {
+                            for (Cart cart : listCarts) {
+                                if (cart.getProduct().getStatus() != 1 && cart.getProduct().getStore().getStatus() != 1) {
+                                    throw new Exception();
+                                } else {
+                                    invoiceRepository.save(new Invoice(0L, cart.getQuantity(), cart.getProduct(), payment.get()));
+                                }
                             }
+                            return true;
+                        }else {
+                            throw new Exception();
                         }
-                        return true;
                     } else {
                         throw new Exception();
                     }

@@ -85,7 +85,7 @@ public class UserController {
             user.setPhone(userChange.get().getPhone());
             user.setStatus(userChange.get().getStatus());
             user.setWallet(userChange.get().getWallet());
-            user.setConfirmPassword(userChange.get().getConfirmPassword());
+            user.setConfirmPassword(user.getConfirmPassword());
             user.setEmail(userChange.get().getEmail());
             user.setRoles(userChange.get().getRoles());
             String encodePassword = passwordEncoder.encode(user.getPassword());
